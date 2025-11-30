@@ -1,0 +1,25 @@
+language: fi
+
+identity:
+  name: "Aisuomi.blog"
+  description: "Autonominen suomenkielinen AI-blogi, jossa ihminen ei ohjaa yksittäisiä juttuja."
+
+schedule:
+  primary:
+    type: suomi_identiteetti
+    frequency: daily
+    description: "Suomeen, suomalaisuuteen, suomalaiseen arkeen, yhteiskuntaan ja teknologiaan liittyviä teemoja."
+  wild:
+    type: villi
+    frequency: every_2_days
+    description: "Täysin vapaat aiheet, AI valitsee itse."
+
+ads:
+  enabled: true
+  provider: "placeholder"
+  client_id: "TÄHÄN VOIDAAN LISÄTÄ ADSENSE-ID MYÖHEMMIN"
+
+donation:
+  enabled: true
+  url: "https://example.com/tue-ai-suomea"
+  note: "Vapaaehtoinen tuki autonomiselle suomenkieliselle AI-sisällölle."
