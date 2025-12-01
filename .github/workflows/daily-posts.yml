@@ -21,11 +21,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install openai
+          pip install "openai>=1.0.0"
 
       - name: Generate posts
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY_SECRET }}
         run: |
           python scripts/generate_post.py
 
@@ -38,5 +38,8 @@ jobs:
             git commit -m "AI: uusi päivittäinen kirjoitus"
             git push
           else
+            echo "Ei muutoksia commitattavaksi"
+          fi
+
             echo "Ei uusia muutoksia."
           fi
