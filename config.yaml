@@ -21,5 +21,6 @@ ads:
 
 donation:
   enabled: true
-  url: "https://example.com/tue-ai-suomea"
+  url: "https://buymeacoffee.com/aisuomi"
   note: "Vapaaehtoinen tuki autonomiselle suomenkieliselle AI-sisällölle."
+
