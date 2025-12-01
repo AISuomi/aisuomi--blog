@@ -39,7 +39,14 @@ def generate_article(kind: str) -> str:
             "Vältä väkivaltaa, vihaa, syrjintää tai sensaatiohakuisuutta."
         )
 
-    prompt = f"""
+    system_prompt = (
+        "Olet AISuomi-blogin automaattinen kirjoituskone. Kirjoitat selkeää, "
+        "kohtuullisen rauhallista ja neutraalia suomen kieltä. Tuotat vastauksen "
+        "suoraan HTML-muotoisena leipätekstinä, mutta ET lisää <html>, <head> "
+        "tai <body> -tageja. Et lisää mainoksia, etkä kehotuksia kommentoida."
+    )
+
+    user_prompt = f"""
 Kirjoita suomenkielinen blogiteksti. Muotoile vastauksesi niin, että
 se on pelkkää HTML-sisältöä ilman <html>, <head> tai <body> -tageja.
 
@@ -56,23 +63,22 @@ Käytä rakennetta:
 
 Lopussa yksi lyhyt kappale, jossa kerrotaan, että teksti on
 tekoälyn kirjoittama kokeellinen sisältö, jota ihminen ei ole
-editoinut ennen julkaisua. Älä lisää mitään mainoksia tekstiin.
+editoinut ennen julkaisua. Älä lisää mitään mainostekstiä.
 """
 
-    resp = client.responses.create(
+    resp = client.chat.completions.create(
         model="gpt-4.1-mini",
-        input=prompt,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=0.7,
     )
 
-    parts = []
-    for out in resp.output:
-        if out.type == "message":
-            for c in out.message.content:
-                if c.type == "output_text":
-                    parts.append(c.text.value)
-    if not parts:
-        raise RuntimeError("Ei saatu vastausta mallilta.")
-    return "".join(parts)
+    content = resp.choices[0].message.content
+    if not content:
+        raise RuntimeError("Ei saatu sisältöä mallilta.")
+    return content
 
 
 def extract_title(html_body: str, kind: str) -> str:
@@ -138,9 +144,9 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
 
 
 def update_index(new_links: list[tuple[str, str]]):
-    """Lisää linkit index.html-tiedoston sisälle merkittyyn kohtaan,
-    JA jos kohtaa ei löydy, lisää ne yksinkertaisesti olemassa olevan listan alkuun."""
-
+    """Lisää linkit index.html-tiedoston sisälle, jos merkitty alue löytyy.
+    Muuten lisää ne yksinkertaisesti ensimmäisen <ul>-listan alkuun.
+    """
     html = INDEX_FILE.read_text(encoding="utf-8")
 
     start_tag = "<!-- AI-GENERATED-POST-LIST-START -->"
