@@ -1,12 +1,13 @@
 import os
+import json
 from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
 
-from openai import OpenAI
+import requests
 
-# API-avain tulee GitHubin secrettinä
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+API_KEY = os.environ["OPENAI_API_KEY"]
+API_URL = "https://api.openai.com/v1/chat/completions"
 
 ROOT = Path(__file__).resolve().parents[1]
 POSTS_DIR = ROOT / "posts"
@@ -22,6 +23,34 @@ def make_filename(kind: str) -> Path:
 
 def post_exists(path: Path) -> bool:
     return path.exists()
+
+
+def call_openai(system_prompt: str, user_prompt: str) -> str:
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "model": "gpt-4.1-mini",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        "temperature": 0.7,
+    }
+
+    resp = requests.post(API_URL, headers=headers, json=payload, timeout=60)
+    if resp.status_code != 200:
+        raise RuntimeError(f"OpenAI API error: {resp.status_code} {resp.text}")
+
+    data = resp.json()
+    try:
+        content = data["choices"][0]["message"]["content"]
+    except Exception as e:
+        raise RuntimeError(f"Unexpected response format: {json.dumps(data)[:500]}") from e
+
+    return content
 
 
 def generate_article(kind: str) -> str:
@@ -66,19 +95,7 @@ tekoälyn kirjoittama kokeellinen sisältö, jota ihminen ei ole
 editoinut ennen julkaisua. Älä lisää mitään mainostekstiä.
 """
 
-    resp = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        temperature=0.7,
-    )
-
-    content = resp.choices[0].message.content
-    if not content:
-        raise RuntimeError("Ei saatu sisältöä mallilta.")
-    return content
+    return call_openai(system_prompt, user_prompt)
 
 
 def extract_title(html_body: str, kind: str) -> str:
