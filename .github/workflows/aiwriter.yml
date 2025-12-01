@@ -1,117 +1,44 @@
-name: AISuomi – Writer v2
+name: AISuomi – päivittäiset kirjoitukset
 
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: "15 4 * * *"   # joka päivä klo 04:15 UTC
+  workflow_dispatch:        # voit ajaa käsin testiksi
 
 jobs:
-  generate_v2:
+  generate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # sallii git pushin
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install requests
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install --upgrade openai
 
-      - name: Generate post
+      - name: Generate posts
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY_SECRET }}
         run: |
-          python3 - << 'EOF'
-          import os, json
-          import requests
-          from datetime import datetime
-          from pathlib import Path
-          from textwrap import dedent
+          python scripts/generate_post.py
 
-          api_key = os.environ["OPENAI_API_KEY"]
-
-          root = Path(".").resolve()
-          posts_dir = root / "posts"
-          index_file = root / "index.html"
-          posts_dir.mkdir(exist_ok=True)
-
-          today = datetime.utcnow().strftime("%Y-%m-%d")
-          filename = f"{today}-identiteetti.html"
-          output_path = posts_dir / filename
-
-          system_prompt = "Kirjoitat selkeää HTML-tekstiä ilman <html>- tai <body>-tageja."
-          user_prompt = """
-          Kirjoita suomenkielinen blogiteksti suomalaisuudesta.
-          Käytä rakennetta:
-          
-          <h1>Otsikko</h1>
-          <p>Ingressi</p>
-          <h2>Alaotsikko</h2>
-          <p>Tekstiä...</p>
-          <h2>Toinen alaotsikko</h2>
-          <p>Tekstiä...</p>
-          """
-
-          headers = {
-              "Authorization": f"Bearer {api_key}",
-              "Content-Type": "application/json",
-          }
-
-          payload = {
-              "model": "gpt-4.1-mini",
-              "messages": [
-                  {"role": "system", "content": system_prompt},
-                  {"role": "user", "content": user_prompt},
-              ],
-          }
-
-          resp = requests.post("https://api.openai.com/v1/chat/completions",
-                               headers=headers, json=payload)
-
-          if resp.status_code != 200:
-              raise SystemExit(f"OpenAI error: {resp.status_code} {resp.text}")
-
-          data = resp.json()
-          content = data["choices"][0]["message"]["content"]
-
-          title_start = content.find("<h1>")
-          title_end = content.find("</h1>")
-          if title_start != -1 and title_end != -1:
-              title = content[title_start+4:title_end].strip()
-          else:
-              title = "AISuomi – Päivän kirjoitus"
-
-          html = f"""<!doctype html>
-          <html lang="fi">
-          <head>
-            <meta charset="utf-8">
-            <title>{title}</title>
-            <link rel="stylesheet" href="../assets/styles.css">
-          </head>
-          <body>
-            {content}
-          </body>
-          </html>"""
-
-          output_path.write_text(dedent(html), encoding="utf-8")
-
-          with open(index_file, "r", encoding="utf-8") as f:
-              idx = f.read()
-
-          new_item = f'<li><a href="posts/{filename}">{title}</a></li>\\n'
-          idx = idx.replace("<ul>", "<ul>\\n" + new_item)
-
-          with open(index_file, "w", encoding="utf-8") as f:
-              f.write(idx)
-
-          EOF
-
-      - name: Commit result
+      - name: Commit and push if changed
         run: |
           if [[ -n "$(git status --porcelain)" ]]; then
             git config user.name "AISuomi Bot"
             git config user.email "actions@github.com"
             git add posts index.html
-            git commit -m "Writer v2: uusi kirjoitus"
+            git commit -m "AI: uusi päivittäinen kirjoitus"
             git push
           else
-            echo "Ei muutoksia."
+            echo "Ei uusia muutoksia."
+          fi
