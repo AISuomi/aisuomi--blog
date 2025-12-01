@@ -47,9 +47,13 @@ def call_openai(system_prompt: str, user_prompt: str) -> str:
     try:
         content = data["choices"][0]["message"]["content"]
     except Exception as e:
-        raise RuntimeError(f"Unexpected response format: {json.dumps(data)[:500]}") from e
+        raise RuntimeError(
+            f"Unexpected response format: {json.dumps(data)[:500]}"
+        ) from e
 
     return content
+
+
 def generate_article(kind: str) -> str:
     if kind == "identiteetti":
         topic_instruction = (
@@ -57,8 +61,9 @@ def generate_article(kind: str) -> str:
             "arjesta, historiasta, luonnosta tai kulttuurista. "
             "Vältä päivänpolitiikkaa, puolueita, vaaleja, hallituksia, "
             "ulkopolitiikkaa ja kansainvälisiä konflikteja. "
-            "Älä ota kantaa ideologioihin (esim. woke, maga, feminismit, "
-            "sovinismi, uskonnolliset kiistat, ilmastokiistat, rokotekeskustelut). "
+            "Älä ota kantaa ideologioihin (esim. woke, maga, erilaiset "
+            "äärifeminismi- tai äärisovinismi-keskustelut, uskonnolliset kiistat, "
+            "ilmastokiistat, rokotekeskustelut). "
             "Kirjoita kuin yleisölle, jossa voi olla myös lapsia: "
             "siisti, asiallinen, rauhallinen sävy."
         )
@@ -111,7 +116,6 @@ tekoälyn kokeellisesti tuottamaa sisältöä ilman ihmiseditointia.
     return call_openai(system_prompt, user_prompt)
 
 
-
 def extract_title(html_body: str, kind: str) -> str:
     title = f"AISuomi – {kind} {TODAY.isoformat()}"
     start = html_body.find("<h1>")
@@ -143,6 +147,7 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
       <a href="../index.html">Etusivu</a>
       <a href="../privacy.html">Tietosuoja</a>
       <a href="../cookies.html">Evästeet</a>
+      <a href="../donate.html">Tuki</a>
     </nav>
 
     <main class="layout">
@@ -153,7 +158,20 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
         <div class="card">
           <h2>Huomio</h2>
           <p class="muted">
-            Teksti on AI:n tuottamaa sisältöä ilman ihmiseditointia.
+            Teksti on tekoälyn tuottamaa sisältöä. Ihminen ei ole
+            editoinut sitä ennen julkaisua.
+          </p>
+        </div>
+        <div class="card">
+          <h2>Suositeltu juttu</h2>
+          <p>
+            <a href="#" target="_blank">
+              Päivän neutraali suositus →
+            </a>
+          </p>
+          <p class="muted">
+            Affiliate-linkki (paikka). Voidaan ottaa käyttöön myöhemmin
+            ilman lisäkustannuksia lukijalle.
           </p>
         </div>
       </aside>
@@ -162,6 +180,7 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
     <footer class="site-footer">
       AISuomi – autonominen AI-blogi.
       | <a href="../index.html">Etusivu</a>
+      | <a href="../donate.html">Tuki</a>
       | <a href="../privacy.html">Tietosuoja</a>
       | <a href="../cookies.html">Evästeet</a>
     </footer>
@@ -195,13 +214,13 @@ def main():
 
     new_links = []
 
-    # --- päivittäinen identiteetti ---
+    # Päivittäinen identiteetti
     if not post_exists(identity_path):
         body = generate_article("identiteetti")
         title = write_post(identity_path, "identiteetti", body)
         new_links.append((f"posts/{identity_path.name}", title))
 
-    # --- joka toinen päivä villi ---
+    # Joka toinen päivä villi (parilliset päivät)
     if TODAY.day % 2 == 0 and not post_exists(wild_path):
         body = generate_article("villi")
         title = write_post(wild_path, "villi", body)
