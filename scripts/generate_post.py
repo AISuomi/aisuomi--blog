@@ -50,34 +50,48 @@ def call_openai(system_prompt: str, user_prompt: str) -> str:
         raise RuntimeError(f"Unexpected response format: {json.dumps(data)[:500]}") from e
 
     return content
-
-
 def generate_article(kind: str) -> str:
     if kind == "identiteetti":
         topic_instruction = (
-            "suomalaisuudesta, suomen kielestä, suomalaisesta yhteiskunnasta "
-            "tai kulttuurista. Vältä päivänpolitiikkaa ja pysy "
-            "pohdiskelevana ja rauhallisena."
+            "suomalaisuudesta, Suomesta, suomen kielestä tai suomalaisesta "
+            "arjesta, historiasta, luonnosta tai kulttuurista. "
+            "Vältä päivänpolitiikkaa, puolueita, vaaleja, hallituksia, "
+            "ulkopolitiikkaa ja kansainvälisiä konflikteja. "
+            "Älä ota kantaa ideologioihin (esim. woke, maga, feminismit, "
+            "sovinismi, uskonnolliset kiistat, ilmastokiistat, rokotekeskustelut). "
+            "Kirjoita kuin yleisölle, jossa voi olla myös lapsia: "
+            "siisti, asiallinen, rauhallinen sävy."
         )
     else:
         topic_instruction = (
-            "vapaasta ja villistä aiheesta, joka voi liittyä arkeen, "
-            "luontoon, teknologiaan, filosofiaan, tulevaisuuskuviin tai "
-            "johonkin absurdin kevyesti humoristiseen näkökulmaan. "
-            "Pidä teksti neutraalina ja harmittomana."
+            "vapaasta ja mielikuvituksellisesta mutta harmittomasta aiheesta, "
+            "joka liittyy esimerkiksi arkeen, luontoon, ihmisten väliseen "
+            "ystävällisyyteen, luoviin ajatuksiin, filosofiaan, kevyisiin "
+            "tulevaisuuskuviin tai arkisiin oivalluksiin. "
+            "Vältä täysin politiikkaa, ideologioita, sotaa, rikoksia, "
+            "väkivaltaa, päihteitä, seksiä, syrjintää ja muita "
+            "riitaisiksi tai ronskeiksi koettuja aiheita. "
+            "Teksti saa olla outo tai leikkisä, mutta aina siten, että "
+            "se sopii myös lapsen luettavaksi."
         )
 
     system_prompt = (
-        "Olet AISuomi-blogin automaattinen kirjoituskone. Kirjoitat selkeää, "
-        "rauhallista ja neutraalia suomen kieltä. Tuotat vastauksen "
-        "HTML-leipätekstinä ilman <html>, <body> tai <head> -tageja."
+        "Olet AISuomi-blogin automaattinen kirjoituskone. "
+        "Kirjoitat selkeää, rauhallista ja neutraalia suomen kieltä. "
+        "Vältät politiikkaa, puolueita, ideologioita (kuten woke/maga/"
+        "äärifeminismi/äärisovinismi), uskonnollisia kiistoja, sotaa, "
+        "rokotekeskusteluja, rajua väkivaltaa, seksiä, päihteitä ja muuta "
+        "lapsille sopimatonta sisältöä. Kirjoitat niin, että teksti sopii "
+        "kaikenikäisille lukijoille. Tuotat vastauksen HTML-leipätekstinä "
+        "ilman <html>, <head> tai <body> -tageja. Et lisää mainoksia etkä "
+        "kehotuksia kommentoida."
     )
 
     user_prompt = f"""
 Kirjoita suomenkielinen blogiteksti. Muotoile vastauksesi pelkkänä
 HTML-sisältönä ilman <html>, <head> tai <body> -tageja.
 
-Aiheen tulee olla {topic_instruction}.
+Aiheen tulee olla {topic_instruction}
 
 Käytä rakennetta:
 
@@ -95,6 +109,7 @@ tekoälyn kokeellisesti tuottamaa sisältöä ilman ihmiseditointia.
 """
 
     return call_openai(system_prompt, user_prompt)
+
 
 
 def extract_title(html_body: str, kind: str) -> str:
