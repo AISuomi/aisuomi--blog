@@ -5,7 +5,7 @@ from textwrap import dedent
 
 from openai import OpenAI
 
-# API-avain haetaan GitHub-sekretistä
+# API-avain tulee GitHubin secrettinä
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,31 +27,36 @@ def post_exists(path: Path) -> bool:
 def generate_article(kind: str) -> str:
     if kind == "identiteetti":
         topic_instruction = (
-            "suomalaisuudesta, suomen kielestä, kulttuurista, "
-            "identiteetistä tai Suomesta yhteiskuntana."
+            "suomalaisuudesta, suomen kielestä, suomalaisesta yhteiskunnasta "
+            "tai kulttuurista. Vältä puhdasta päivänpolitiikkaa ja pysy "
+            "pohdiskelevana, rakentavana ja faktasuuntautuneena."
         )
     else:
         topic_instruction = (
-            "vapaasta ja yllättävästä aiheesta, joka ei riko lakeja "
-            "eikä sisällä vihaa, syrjintää, väkivaltaa tai muuta "
-            "haitallista sisältöä."
+            "vapaasta mutta harmittomasta aiheesta, joka voi liittyä "
+            "esimerkiksi arkiseen elämään Suomessa, luontoon, "
+            "ajattelutapoihin, tulevaisuuskuviin tai teknologiaan. "
+            "Vältä väkivaltaa, vihaa, syrjintää tai sensaatiohakuisuutta."
         )
 
     prompt = f"""
-Kirjoita suomenkielinen blogiteksti muodossa valmis HTML-sisältö
-(ilman <html>, <head> tai <body> -elementtejä, vain otsikot ja
-leipäteksti). Aiheen tulee olla {topic_instruction}
+Kirjoita suomenkielinen blogiteksti. Muotoile vastauksesi niin, että
+se on pelkkää HTML-sisältöä ilman <html>, <head> tai <body> -tageja.
 
-Rakenne:
+Aiheen tulee olla {topic_instruction}
+
+Käytä rakennetta:
 
 <h1>Otsikko</h1>
-<p>lyhyt ingressi</p>
-<h2>alaotsikot</h2>
-<p>leipätekstiä</p>
+<p>Lyhyt ingressi, 1–3 virkettä.</p>
+<h2>Alaotsikko</h2>
+<p>Leipätekstiä useampia kappaleita.</p>
+<h2>Toinen alaotsikko</h2>
+<p>Lisää leipätekstiä.</p>
 
-Lopussa lyhyt kappale, jossa muistutus, että teksti on
-tekoälyn kirjoittama kokeellinen sisältö, eikä sitä ole
-ihminen editoinut.
+Lopussa yksi lyhyt kappale, jossa kerrotaan, että teksti on
+tekoälyn kirjoittama kokeellinen sisältö, jota ihminen ei ole
+editoinut ennen julkaisua. Älä lisää mitään mainoksia tekstiin.
 """
 
     resp = client.responses.create(
@@ -59,7 +64,6 @@ ihminen editoinut.
         input=prompt,
     )
 
-    # Poimitaan tekstisisältö
     parts = []
     for out in resp.output:
         if out.type == "message":
@@ -71,18 +75,19 @@ ihminen editoinut.
     return "".join(parts)
 
 
-def write_post(path: Path, kind: str, html_body: str) -> str:
-    # Nappaa otsikon <h1> tageista
+def extract_title(html_body: str, kind: str) -> str:
     title = f"AISuomi – {kind} {TODAY.isoformat()}"
     start = html_body.find("<h1>")
     end = html_body.find("</h1>")
     if start != -1 and end != -1:
-        title = (
-            html_body[start + 4 : end]
-            .strip()
-            .replace("\n", " ")
-        )
+        candidate = html_body[start + 4 : end].strip().replace("\n", " ")
+        if candidate:
+            title = candidate
+    return title
 
+
+def write_post(path: Path, kind: str, html_body: str) -> str:
+    title = extract_title(html_body, kind)
     document = f"""<!doctype html>
 <html lang="fi">
   <head>
@@ -99,6 +104,8 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
 
     <nav class="top-nav">
       <a href="../index.html">Etusivu</a>
+      <a href="../privacy.html">Tietosuoja</a>
+      <a href="../cookies.html">Evästeet</a>
     </nav>
 
     <main class="layout">
@@ -109,15 +116,17 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
         <div class="card">
           <h2>Huomio</h2>
           <p class="muted">
-            Tämä kirjoitus on tekoälyn tuottama. Sisältöä ei ole
-            ihminen editoinut ennen julkaisua.
+            Tämä kirjoitus on tekoälyn tuottama. Ihminen ei ole editoinut
+            sitä ennen julkaisua. Jos löydät virheitä, ne kertovat enemmän
+            järjestelmän rajoista kuin Suomesta.
           </p>
         </div>
       </aside>
     </main>
 
     <footer class="site-footer">
-      AISuomi – autonominen AI-blogikokeilu.
+      AISuomi – autonominen suomenkielinen AI-blogikokeilu.
+      | <a href="../index.html">Etusivu</a>
       | <a href="../privacy.html">Tietosuoja</a>
       | <a href="../cookies.html">Evästeet</a>
     </footer>
@@ -129,7 +138,9 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
 
 
 def update_index(new_links: list[tuple[str, str]]):
-    """Lisää linkit index.html-tiedoston sisälle kommenttien väliin."""
+    """Lisää linkit index.html-tiedoston sisälle merkittyyn kohtaan,
+    JA jos kohtaa ei löydy, lisää ne yksinkertaisesti olemassa olevan listan alkuun."""
+
     html = INDEX_FILE.read_text(encoding="utf-8")
 
     start_tag = "<!-- AI-GENERATED-POST-LIST-START -->"
@@ -138,22 +149,28 @@ def update_index(new_links: list[tuple[str, str]]):
     start = html.find(start_tag)
     end = html.find(end_tag)
 
-    if start == -1 or end == -1:
-        print("Varoitus: placeholder-kommentteja ei löytynyt index.html:stä.")
+    if start != -1 and end != -1:
+        before = html[: start + len(start_tag)]
+        after = html[end:]
+        items = []
+        for href, title in new_links:
+            items.append(f'<li><a href="{href}">{title}</a></li>')
+        middle = "\n          " + "\n          ".join(items) + "\n          "
+        new_html = before + middle + after
+        INDEX_FILE.write_text(new_html, encoding="utf-8")
         return
 
-    before = html[: start + len(start_tag)]
-    after = html[end:]
-
-    # Rakennetaan <li>-linkit
-    items = []
-    for href, title in new_links:
-        items.append(f'<li><a href="{href}">{title}</a></li>')
-
-    middle = "\n          " + "\n          ".join(items) + "\n          "
-
-    new_html = before + middle + after
-    INDEX_FILE.write_text(new_html, encoding="utf-8")
+    # Fallback: etsi ensimmäinen <ul> ja lisää siihen alkuun
+    marker = "<ul>"
+    idx = html.find(marker)
+    if idx != -1:
+        insert_at = idx + len(marker)
+        items = []
+        for href, title in new_links:
+            items.append(f'<li><a href="{href}">{title}</a></li>')
+        middle = "\n        " + "\n        ".join(items) + "\n"
+        new_html = html[:insert_at] + middle + html[insert_at:]
+        INDEX_FILE.write_text(new_html, encoding="utf-8")
 
 
 def main():
@@ -184,4 +201,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
