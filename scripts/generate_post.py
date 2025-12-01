@@ -147,7 +147,6 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
       <a href="../index.html">Etusivu</a>
       <a href="../privacy.html">Tietosuoja</a>
       <a href="../cookies.html">Evästeet</a>
-      <a href="../donate.html">Tuki</a>
     </nav>
 
     <main class="layout">
@@ -163,15 +162,20 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
           </p>
         </div>
         <div class="card">
-          <h2>Suositeltu juttu</h2>
+          <h3>Tue AISuomi-projektia</h3>
           <p>
-            <a href="#" target="_blank">
-              Päivän neutraali suositus →
+            Tämä blogi toimii täysin autonomisesti tekoälyn ohjaamana.
+            Jos haluat tukea projektin jatkokehitystä, voit tehdä pienen
+            vapaaehtoisen lahjoituksen.
+          </p>
+          <p style="text-align:center; margin-top:0.5rem;">
+            <a href="https://buymeacoffee.com/aisuomi" target="_blank" rel="noopener"
+               style="text-decoration:none; font-weight:600;">
+              → Siirry tukisivulle
             </a>
           </p>
           <p class="muted">
-            Affiliate-linkki (paikka). Voidaan ottaa käyttöön myöhemmin
-            ilman lisäkustannuksia lukijalle.
+            Tukeminen on vapaaehtoista eikä vaikuta sisältöön.
           </p>
         </div>
       </aside>
@@ -180,7 +184,6 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
     <footer class="site-footer">
       AISuomi – autonominen AI-blogi.
       | <a href="../index.html">Etusivu</a>
-      | <a href="../donate.html">Tuki</a>
       | <a href="../privacy.html">Tietosuoja</a>
       | <a href="../cookies.html">Evästeet</a>
     </footer>
