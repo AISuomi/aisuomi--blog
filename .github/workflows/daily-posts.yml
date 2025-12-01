@@ -23,12 +23,154 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-
       - name: Generate posts
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY_SECRET }}
         run: |
-          python scripts/generate_post.py
+          python - << 'PY'
+          import os, json
+          import requests
+          from datetime import datetime
+          from pathlib import Path
+          from textwrap import dedent
+
+          api_key = os.environ["OPENAI_API_KEY"]
+
+          # Selvitetään repon juurikansio: .github/workflows/… -> kaksi tasoa ylös
+          root = Path(__file__).resolve().parents[2]
+          posts_dir = root / "posts"
+          index_file = root / "index.html"
+          today = datetime.utcnow().date().isoformat()
+
+          posts_dir.mkdir(exist_ok=True)
+
+          system_prompt = (
+              "Olet AISuomi-blogin automaattinen kirjoituskone. Kirjoitat selkeää, "
+              "rauhallista ja neutraalia suomen kieltä. Tuotat vastauksen "
+              "suoraan HTML-muotoisena leipätekstinä, mutta ET lisää <html>, <head> "
+              "tai <body> -tageja. Et lisää mainoksia, etkä kehotuksia kommentoida."
+          )
+
+          user_prompt = f"""
+          Kirjoita suomenkielinen blogiteksti suomalaisuudesta, Suomesta tai suomen kielestä.
+          Muotoile vastauksesi pelkkänä HTML-sisältönä ilman <html>, <head> tai <body> -tageja.
+
+          Käytä suurin piirtein seuraavaa rakennetta:
+
+          <h1>Otsikko</h1>
+          <p>Lyhyt ingressi, 1–3 virkettä.</p>
+          <h2>Alaotsikko</h2>
+          <p>Leipätekstiä useampia kappaleita.</p>
+          <h2>Toinen alaotsikko</h2>
+          <p>Lisää leipätekstiä.</p>
+
+          Loppuun yksi lyhyt kappale, jossa kerrotaan, että teksti on
+          tekoälyn kirjoittama kokeellinen sisältö, jota ihminen ei ole
+          editoinut ennen julkaisua. Älä lisää mitään mainostekstiä.
+          """
+
+          headers = {
+              "Authorization": f"Bearer {api_key}",
+              "Content-Type": "application/json",
+          }
+
+          payload = {
+              "model": "gpt-4.1-mini",
+              "messages": [
+                  {"role": "system", "content": system_prompt},
+                  {"role": "user", "content": user_prompt},
+              ],
+              "temperature": 0.7,
+          }
+
+          resp = requests.post(
+              "https://api.openai.com/v1/chat/completions",
+              headers=headers,
+              json=payload,
+              timeout=60,
+          )
+          if resp.status_code != 200:
+              raise SystemExit(f"OpenAI API error: {resp.status_code} {resp.text}")
+
+          data = resp.json()
+          try:
+              content = data["choices"][0]["message"]["content"]
+          except Exception as e:
+              raise SystemExit(
+                  "Unexpected response format from OpenAI: "
+                  + json.dumps(data)[:800]
+              ) from e
+
+          def extract_title(body: str) -> str:
+              start = body.find("<h1>")
+              end = body.find("</h1>")
+              if start != -1 and end != -1:
+                  return body[start+4:end].strip().replace("\\n", " ")
+              return f"AISuomi – kirjoitus {today}"
+
+          title = extract_title(content)
+          filename = f"{today}-identiteetti.html"
+          path = posts_dir / filename
+
+          html_doc = f"""<!doctype html>
+          <html lang="fi">
+            <head>
+              <meta charset="utf-8">
+              <title>{title}</title>
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <link rel="stylesheet" href="../assets/styles.css">
+            </head>
+            <body>
+              <header class="site-header">
+                <h1>{title}</h1>
+                <p class="tagline">Autonominen AISuomi-blogikirjoitus.</p>
+              </header>
+
+              <nav class="top-nav">
+                <a href="../index.html">Etusivu</a>
+                <a href="../privacy.html">Tietosuoja</a>
+                <a href="../cookies.html">Evästeet</a>
+              </nav>
+
+              <main class="layout">
+                <section class="main-column">
+                {content}
+                </section>
+                <aside class="sidebar">
+                  <div class="card">
+                    <h2>Huomio</h2>
+                    <p class="muted">
+                      Teksti on tekoälyn tuottama. Ihminen ei ole editoinut sitä
+                      ennen julkaisua. Jos löydät virheitä, ne kertovat enemmän
+                      järjestelmän rajoista kuin Suomesta.
+                    </p>
+                  </div>
+                </aside>
+              </main>
+
+              <footer class="site-footer">
+                AISuomi – autonominen suomenkielinen AI-blogikokeilu.
+                | <a href="../index.html">Etusivu</a>
+                | <a href="../privacy.html">Tietosuoja</a>
+                | <a href="../cookies.html">Evästeet</a>
+              </footer>
+            </body>
+          </html>
+          """
+          path.write_text(dedent(html_doc), encoding="utf-8")
+
+          # Päivitä index.html: lisää linkki ensimmäisen <ul>-listan alkuun
+          idx_html = index_file.read_text(encoding="utf-8")
+          marker = "<ul>"
+          pos = idx_html.find(marker)
+          if pos != -1:
+              insert_at = pos + len(marker)
+              link_html = f'\\n        <li><a href="posts/{filename}">{title}</a></li>'
+              idx_html = idx_html[:insert_at] + link_html + idx_html[insert_at:]
+              index_file.write_text(idx_html, encoding="utf-8")
+          else:
+              print("Index.html: ei löytynyt <ul>-kohtaa linkin lisäykseen.")
+          PY
 
       - name: Commit and push if changed
         run: |
@@ -40,7 +182,4 @@ jobs:
             git push
           else
             echo "Ei muutoksia commitattavaksi"
-          fi
-
-            echo "Ei uusia muutoksia."
           fi
