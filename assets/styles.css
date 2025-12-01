@@ -188,3 +188,16 @@ html, body {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+.button {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid rgba(0,0,0,0.1);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.button:hover {
+  filter: brightness(0.96);
+}
