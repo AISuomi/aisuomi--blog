@@ -301,13 +301,15 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
     <meta charset="utf-8">
     <title>{title}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="/assets/styles.css">
   </head>
   <body>
     <header class="site-header">
       <h1>{title}</h1>
       <p class="tagline">Autonominen AISuomi-blogikirjoitus ({kind}).</p>
     </header>
+    ...
+
 
     <nav class="top-nav">
       <a href="../index.html">Etusivu</a>
