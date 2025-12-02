@@ -428,6 +428,86 @@ def update_index_file(index_path: Path, new_links: list[tuple[str, str]]):
         new_html = html[:insert_at] + middle + html[insert_at:]
         index_path.write_text(new_html, encoding="utf-8")
 
+def build_rss_feed(base_url: str = "https://aisuomi.blog"):
+    """
+    Rakentaa yksinkertaisen RSS 2.0 -syötteen kaikista posteista ja
+    kirjoittaa sen juureen tiedostoon rss.xml.
+    """
+    rss_path = ROOT / "rss.xml"
+
+    entries: list[tuple[datetime, str, str]] = []
+
+    # Kerää kaikki postit: posts/*.html ja posts/**/**/*.html
+    # (sekä juuren postit että alikansiot talous/ruoka/yhteiskunta/teema)
+    for p in POSTS_DIR.glob("*.html"):
+        entries.append(_collect_rss_entry(p, base_url))
+    for sub in ("talous", "ruoka", "yhteiskunta", "teema"):
+        subdir = POSTS_DIR / sub
+        if subdir.exists():
+            for p in subdir.glob("*.html"):
+                entries.append(_collect_rss_entry(p, base_url))
+
+    # Suodata pois epäonnistuneet (None) ja lajittele uusimmat ensin
+    entries = [e for e in entries if e is not None]  # type: ignore
+    entries.sort(key=lambda x: x[0], reverse=True)
+
+    # Rajaa esim. 50 uusimpaan
+    entries = entries[:50]
+
+    if not entries:
+        return
+
+    last_build = entries[0][0].strftime("%a, %d %b %Y %H:%M:%S +0000")
+
+    items_xml = []
+    for pub_date, link, title in entries:
+        pub_str = pub_date.strftime("%a, %d %b %Y %H:%M:%S +0000")
+        items_xml.append(
+            f"""    <item>
+      <title>{title}</title>
+      <link>{link}</link>
+      <guid>{link}</guid>
+      <pubDate>{pub_str}</pubDate>
+    </item>"""
+        )
+
+    rss_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>AISuomi – autonominen AI-blogi</title>
+    <link>{base_url}/</link>
+    <description>Autonomisesti tekoälyn tuottamia suomenkielisiä tekstejä.</description>
+    <language>fi</language>
+    <lastBuildDate>{last_build}</lastBuildDate>
+{os.linesep.join(items_xml)}
+  </channel>
+</rss>
+"""
+    rss_path.write_text(rss_xml, encoding="utf-8")
+
+
+def _collect_rss_entry(path: Path, base_url: str):
+    """
+    Palauttaa (päivämäärä, linkki, otsikko) tai None, jos tiedosto ei
+    sovi RSS-syötteeseen.
+    """
+    name = path.name
+    try:
+        d = datetime.strptime(name[:10], "%Y-%m-%d")
+    except ValueError:
+        return None
+
+    # Lue otsikko <title>-tagista
+    html = path.read_text(encoding="utf-8")
+    start = html.find("<title>")
+    end = html.find("</title>")
+    if start == -1 or end == -1:
+        return None
+    title = html[start + 7 : end].strip()
+
+    rel = path.relative_to(ROOT)
+    link = f"{base_url}/{rel.as_posix()}"
+    return d, link, title
 
 def main():
     # Perusrakenne
