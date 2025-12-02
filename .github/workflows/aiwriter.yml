@@ -25,7 +25,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-
       - name: Generate posts
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY_SECRET }}
@@ -37,7 +36,7 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git config user.name "AISuomi Bot"
             git config user.email "actions@github.com"
-            git add posts index.html
+            git add -A
             git commit -m "AI: uusi päivittäinen kirjoitus"
             git push
           else
