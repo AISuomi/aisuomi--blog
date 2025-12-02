@@ -294,8 +294,14 @@ def extract_title(html_body: str, kind: str) -> str:
     return title
 
 def write_post(path: Path, kind: str, html_body: str) -> str:
+    # Otsikko <h1>:stä tai varatitteli
     title = extract_title(html_body, kind)
-document = f"""<!doctype html>
+
+    # Luodaan absoluuttinen URL jakonappeja ja RSS:ää varten
+    relative = path.relative_to(ROOT)
+    post_url = f"https://aisuomi.blog/{relative.as_posix()}"
+
+    document = f"""<!doctype html>
 <html lang="fi">
   <head>
     <meta charset="utf-8">
@@ -303,14 +309,11 @@ document = f"""<!doctype html>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/assets/styles.css">
   </head>
-
   <body>
     <header class="site-header">
       <h1>{title}</h1>
       <p class="tagline">Autonominen AISuomi-blogikirjoitus ({kind}).</p>
     </header>
-    ...
-
 
     <nav class="top-nav">
       <a href="../index.html">Etusivu</a>
@@ -320,11 +323,33 @@ document = f"""<!doctype html>
       <a href="../teema.html">Teema</a>
       <a href="../privacy.html">Tietosuoja</a>
       <a href="../cookies.html">Evästeet</a>
+      <a href="../contact.html">Yhteys</a>
     </nav>
 
     <main class="layout">
       <section class="main-column">
       {html_body}
+
+        <div class="card">
+          <h2>Jaa tämä juttu</h2>
+          <p class="muted">
+            Voit halutessasi jakaa AISuomi-jutun eteenpäin.
+          </p>
+          <p class="share-links">
+            <a href="https://www.facebook.com/sharer/sharer.php?u={post_url}"
+               target="_blank" rel="noopener">
+              Jaa Facebookissa
+            </a><br>
+            <a href="https://twitter.com/intent/tweet?url={post_url}"
+               target="_blank" rel="noopener">
+              Jaa X:ssä
+            </a><br>
+            <a href="https://api.whatsapp.com/send?text={post_url}"
+               target="_blank" rel="noopener">
+              Jaa WhatsAppissa
+            </a>
+          </p>
+        </div>
       </section>
       <aside class="sidebar">
         <div class="card">
@@ -334,25 +359,6 @@ document = f"""<!doctype html>
             editoinut sitä ennen julkaisua.
           </p>
         </div>
-
-        <div class="card">
-          <h3>Jaa AISuomi-juttu</h3>
-          <p>
-            Jos pidit tekstistä, voit jakaa sen eteenpäin ystäville
-            tai somessa.
-          </p>
-          <p style="margin-top:0.5rem;">
-            <a href="#"
-               onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank'); return false;">
-              → Jaa Facebookissa
-            </a>
-          </p>
-          <p class="muted">
-            Voit myös kopioida sivun osoitteen selaimen osoiteriviltä ja
-            lähettää sen viestinä tai jakaa muissa palveluissa.
-          </p>
-        </div>
-
         <div class="card">
           <h3>Tue AISuomi-projektia</h3>
           <p>
@@ -382,16 +388,13 @@ document = f"""<!doctype html>
       | <a href="../teema.html">Teema</a>
       | <a href="../privacy.html">Tietosuoja</a>
       | <a href="../cookies.html">Evästeet</a>
+      | <a href="../contact.html">Yhteys</a>
     </footer>
   </body>
 </html>
 """
     path.write_text(dedent(document), encoding="utf-8")
     return title
-
-
-
-
 def get_last_post_date(dir_path: Path, kind: str):
     """
     Palauttaa viimeisimmän päivämäärän (date) annetusta hakemistosta,
