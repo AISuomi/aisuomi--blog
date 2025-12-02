@@ -293,8 +293,7 @@ def extract_title(html_body: str, kind: str) -> str:
             title = candidate
     return title
 
-
-def write_post(path: Path, kind: str, html_body: str) -> str:
+¨def write_post(path: Path, kind: str, html_body: str) -> str:
     title = extract_title(html_body, kind)
     document = f"""<!doctype html>
 <html lang="fi">
@@ -386,6 +385,7 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
 """
     path.write_text(dedent(document), encoding="utf-8")
     return title
+
 
 
 
