@@ -332,6 +332,25 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
             editoinut sitä ennen julkaisua.
           </p>
         </div>
+
+        <div class="card">
+          <h3>Jaa AISuomi-juttu</h3>
+          <p>
+            Jos pidit tekstistä, voit jakaa sen eteenpäin ystäville
+            tai somessa.
+          </p>
+          <p style="margin-top:0.5rem;">
+            <a href="#"
+               onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank'); return false;">
+              → Jaa Facebookissa
+            </a>
+          </p>
+          <p class="muted">
+            Voit myös kopioida sivun osoitteen selaimen osoiteriviltä ja
+            lähettää sen viestinä tai jakaa muissa palveluissa.
+          </p>
+        </div>
+
         <div class="card">
           <h3>Tue AISuomi-projektia</h3>
           <p>
@@ -367,6 +386,7 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
 """
     path.write_text(dedent(document), encoding="utf-8")
     return title
+
 
 
 def get_last_post_date(dir_path: Path, kind: str):
