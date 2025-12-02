@@ -508,6 +508,62 @@ def _collect_rss_entry(path: Path, base_url: str):
     rel = path.relative_to(ROOT)
     link = f"{base_url}/{rel.as_posix()}"
     return d, link, title
+def build_sitemap(base_url: str = "https://aisuomi.blog"):
+    """
+    Rakentaa yksinkertaisen sitemap.xml-tiedoston, joka sisältää
+    kaikki tärkeät sivut ja postit.
+    """
+    sitemap_path = ROOT / "sitemap.xml"
+
+    urls: list[str] = []
+
+    # Pääsivut
+    root_files = [
+        "index.html",
+        "talous.html",
+        "ruoka.html",
+        "yhteiskunta.html",
+        "teema.html",
+        "privacy.html",
+        "cookies.html",
+    ]
+
+    for name in root_files:
+        p = ROOT / name
+        if p.exists():
+            if name == "index.html":
+                urls.append(f"{base_url}/")
+            else:
+                urls.append(f"{base_url}/{name}")
+
+    # Kaikki postit posts/-hakemistosta (myös alikansiot)
+    if POSTS_DIR.exists():
+        for p in POSTS_DIR.rglob("*.html"):
+            rel = p.relative_to(ROOT)
+            urls.append(f"{base_url}/{rel.as_posix()}")
+
+    # Poista duplikaatit
+    seen = set()
+    unique_urls = []
+    for u in urls:
+        if u not in seen:
+            seen.add(u)
+            unique_urls.append(u)
+
+    if not unique_urls:
+        return
+
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+    ]
+    for loc in unique_urls:
+        lines.append(f"  <url><loc>{loc}</loc></url>")
+    lines.append("</urlset>")
+
+    sitemap_xml = "\n".join(lines) + "\n"
+    sitemap_path.write_text(sitemap_xml, encoding="utf-8")
+
 
 def main():
     # Perusrakenne
@@ -618,6 +674,14 @@ def main():
 
     if not (front_links or talous_links or ruoka_links or yhteiskunta_links or teema_links):
         print("Ei uusia postauksia tälle päivälle.")
+
+    # Lopuksi päivitä RSS-syöte ja sivukartta
+    try:
+        build_rss_feed()
+        build_sitemap()
+    except Exception as e:
+        print(f"RSS/sitemap päivitys epäonnistui: {e}")
+
 
 
 if __name__ == "__main__":
