@@ -295,7 +295,7 @@ def extract_title(html_body: str, kind: str) -> str:
 
 def write_post(path: Path, kind: str, html_body: str) -> str:
     title = extract_title(html_body, kind)
-    document = f"""<!doctype html>
+document = f"""<!doctype html>
 <html lang="fi">
   <head>
     <meta charset="utf-8">
@@ -303,6 +303,7 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/assets/styles.css">
   </head>
+
   <body>
     <header class="site-header">
       <h1>{title}</h1>
