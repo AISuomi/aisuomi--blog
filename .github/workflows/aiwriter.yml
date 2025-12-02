@@ -30,6 +30,16 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY_SECRET }}
         run: |
           python scripts/generate_post.py
+      - name: Post to Facebook (optional)
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: |
+          if [[ -n "$FB_PAGE_ID" && -n "$FB_PAGE_ACCESS_TOKEN" ]]; then
+            python scripts/post_to_facebook.py
+          else
+            echo "FB-tunnuksia ei asetettu, ei lähetetä."
+          fi
 
       - name: Commit and push if changed
         run: |
