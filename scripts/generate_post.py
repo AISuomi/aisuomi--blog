@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
+import base64
 
 import requests
 
@@ -12,6 +13,9 @@ API_URL = "https://api.openai.com/v1/chat/completions"
 ROOT = Path(__file__).resolve().parents[1]
 POSTS_DIR = ROOT / "posts"
 INDEX_FILE = ROOT / "index.html"
+IMAGES_DIR = ROOT / "assets" / "images"
+IMAGE_CATEGORIES = {"identiteetti", "villi", "talous", "ruoka", "yhteiskunta", "teema"}
+
 
 # Kategoriasivut
 TALOUS_INDEX_FILE = ROOT / "talous.html"
@@ -297,9 +301,49 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
     # Otsikko <h1>:stä tai varatitteli
     title = extract_title(html_body, kind)
 
-    # Luodaan absoluuttinen URL jakonappeja ja RSS:ää varten
+    # Absoluuttinen URL jakoa varten (FB / X / WhatsApp)
     relative = path.relative_to(ROOT)
     post_url = f"https://aisuomi.blog/{relative.as_posix()}"
+
+    # Yritetään hakea mahdollinen kuvituskuva tälle kategorialle
+    image_src = None
+    try:
+        image_src = get_category_image_for_current_week(kind)
+    except Exception as e:
+        print(f"Ei voitu hakea kuvituskuvaa kategorialle {kind}: {e}")
+
+    # Haetaan suositellut jutut (sisäinen “AI-suositus”)
+    related_links = get_related_posts(kind, path, max_items=2)
+
+    # Rakennetaan mahdollinen kuvablokki
+    if image_src:
+        hero_html = f"""
+        <figure class="post-hero">
+          <img src="{image_src}" alt="{title} – kuvituskuva">
+          <figcaption class="muted">
+            Kuvituskuva: autonomisesti luotu AI-kuva.
+          </figcaption>
+        </figure>
+        """
+    else:
+        hero_html = ""
+
+    # Rakennetaan suositellut jutut -kortti
+    if related_links:
+        items_html = "\n".join(
+            f'<li><a href="{href}">{rtitle}</a></li>' for href, rtitle in related_links
+        )
+        related_html = f"""
+        <div class="card">
+          <h2>Suositellut jutut</h2>
+          <p class="muted">Muita AISuomi-tekstejä samasta aihepiiristä.</p>
+          <ul>
+            {items_html}
+          </ul>
+        </div>
+        """
+    else:
+        related_html = ""
 
     document = f"""<!doctype html>
 <html lang="fi">
@@ -328,6 +372,7 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
 
     <main class="layout">
       <section class="main-column">
+      {hero_html}
       {html_body}
 
         <div class="card">
@@ -350,6 +395,8 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
             </a>
           </p>
         </div>
+
+        {related_html}
       </section>
       <aside class="sidebar">
         <div class="card">
@@ -395,6 +442,7 @@ def write_post(path: Path, kind: str, html_body: str) -> str:
 """
     path.write_text(dedent(document), encoding="utf-8")
     return title
+
 def get_last_post_date(dir_path: Path, kind: str):
     """
     Palauttaa viimeisimmän päivämäärän (date) annetusta hakemistosta,
@@ -413,6 +461,149 @@ def get_last_post_date(dir_path: Path, kind: str):
         return None
     return max(dates)
 
+def get_week_key(date: datetime.date) -> str:
+    iso_year, iso_week, _ = date.isocalendar()
+    return f"{iso_year}-W{iso_week:02d}"
+
+
+def ensure_category_image(kind: str, week_key: str) -> str:
+    """
+    Varmistaa, että kategoria-kindille on olemassa kuvituskuva tälle viikolle.
+    Palauttaa kuvan polun /assets/images/... -muodossa (URL:ia varten).
+    Luo kuvan kerran viikossa per kategoria OpenAI-kuvamallilla.
+    """
+    if kind not in IMAGE_CATEGORIES:
+        return ""
+
+    cat_dir = IMAGES_DIR / kind
+    cat_dir.mkdir(parents=True, exist_ok=True)
+
+    filename = f"{week_key}-{kind}.png"
+    img_path = cat_dir / filename
+
+    if img_path.exists():
+        # Kuva on jo luotu aiemmin tällä viikolla
+        return f"/assets/images/{kind}/{filename}"
+
+    # Jos kuvaa ei ole, luodaan se OpenAI-kuvamallilla
+    prompt_map = {
+        "talous": (
+            "rauhallinen, abstrakti kuvitus suomalaisesta taloudesta, "
+            "pehmeät siniset ja vihreät sävyt, moderni mutta hillitty tyyli"
+        ),
+        "ruoka": (
+            "valoisa, lämmin kuvitus suomalaisesta kotiruuasta ja "
+            "sesongin raaka-aineista, pehmeä ja ystävällinen tyyli"
+        ),
+        "yhteiskunta": (
+            "neutraali kuvitus suomalaisesta yhteiskunnasta: koulu, "
+            "terveydenhuolto, kirjasto, ilman politiikkaa tai logoja"
+        ),
+        "teema": (
+            "tunnelmallinen, vuodenaikaan sopiva kuvitus, kuten talvinen "
+            "metsä tai hiljainen kaupunkimaisema, rauhallinen tyyli"
+        ),
+        "identiteetti": (
+            "kuvitus suomalaisesta luonnosta ja kulttuurista, järvi, "
+            "metsä ja valoisa taivas, rauhallinen ja mietiskelevä"
+        ),
+        "villi": (
+            "mielikuvituksellinen, lempeän outo kuvitus, jossa on "
+            "luontoa, valoa ja hieman satumainen tunnelma"
+        ),
+    }
+
+    prompt = prompt_map.get(
+        kind,
+        "rauhallinen ja neutraali kuvitus suomalaisesta luonnosta ja arjesta"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "model": "gpt-image-1",
+        "prompt": prompt,
+        "size": "1024x1024",
+        "n": 1,
+        "response_format": "b64_json",
+    }
+
+    resp = requests.post(
+        "https://api.openai.com/v1/images",
+        headers=headers,
+        json=payload,
+        timeout=120,
+    )
+    if resp.status_code != 200:
+        raise RuntimeError(f"OpenAI Images API error: {resp.status_code} {resp.text}")
+
+    data = resp.json()
+    img_b64 = data["data"][0]["b64_json"]
+    img_bytes = base64.b64decode(img_b64)
+    img_path.write_bytes(img_bytes)
+
+    return f"/assets/images/{kind}/{filename}"
+
+
+def get_category_image_for_current_week(kind: str) -> str:
+    """
+    Julkinen apufunktio write_post:ille: yksi kuva/viikko/kategoria.
+    """
+    week_key = get_week_key(TODAY)
+    return ensure_category_image(kind, week_key)
+
+def _extract_title_from_document(doc_html: str) -> str:
+    start = doc_html.find("<title>")
+    end = doc_html.find("</title>")
+    if start != -1 and end != -1:
+        return doc_html[start + 7 : end].strip()
+    # fallback: etsi <h1>
+    start = doc_html.find("<h1>")
+    end = doc_html.find("</h1>")
+    if start != -1 and end != -1:
+        return doc_html[start + 4 : end].strip()
+    return "AISuomi – artikkeli"
+
+
+def get_related_posts(kind: str, current_path: Path, max_items: int = 2) -> list[tuple[str, str]]:
+    """
+    Etsii samasta kategoriasta muita postauksia ja palauttaa listan
+    (href, title). Yksinkertainen, mutta riittää “AI-suosittelijaksi”.
+    """
+    results: list[tuple[datetime, Path]] = []
+
+    if kind in {"talous", "ruoka", "yhteiskunta", "teema"}:
+        base_dir = POSTS_DIR / kind
+        pattern = f"*-{kind}.html"
+    else:
+        base_dir = POSTS_DIR
+        pattern = f"*-{kind}.html"
+
+    for p in base_dir.glob(pattern):
+        if p == current_path:
+            continue
+        name = p.name
+        try:
+            d = datetime.strptime(name[:10], "%Y-%m-%d")
+        except ValueError:
+            continue
+        results.append((d, p))
+
+    # Uusimmat ensin
+    results.sort(key=lambda item: item[0], reverse=True)
+    results = results[:max_items]
+
+    out: list[tuple[str, str]] = []
+    for _, p in results:
+        doc_html = p.read_text(encoding="utf-8", errors="ignore")
+        title = _extract_title_from_document(doc_html)
+        rel = p.relative_to(ROOT).as_posix()
+        href = f"/{rel}"
+        out.append((href, title))
+
+    return out
 
 def update_index_file(index_path: Path, new_links: list[tuple[str, str]]):
     """
