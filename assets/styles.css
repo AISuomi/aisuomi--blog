@@ -52,6 +52,27 @@ html, body {
   transition: all 0.18s ease-out;
   border: 1px solid transparent;
 }
+.top-nav {
+  display: flex;
+  flex-wrap: wrap;          /* sallitaan rivinvaihto */
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem 1.5rem;
+}
+
+.top-nav a {
+  white-space: nowrap;      /* ei katkaista sanaa keskeltä */
+  font-size: 0.95rem;
+}
+@media (max-width: 480px) {
+  .top-nav {
+    gap: 0.5rem;
+  }
+
+  .top-nav a {
+    font-size: 0.85rem;
+  }
+}
 
 .layout {
   display: grid;
