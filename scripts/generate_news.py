@@ -13,22 +13,76 @@ DATA_DIR.mkdir(exist_ok=True)
 NEWS_HISTORY_PATH = DATA_DIR / "news_history.json"
 NEWS_INDEX_PAGE = ROOT / "uutisiasuomesta.html"
 
-# Voit vaihtaa/antaa lisää syötteitä myöhemmin
+# Hakusanat: Suomi + paikannimet
+KEYWORDS = [
+    "finland",
+    "finnish",
+    "finns",
+    "suomi",
+    "suomalainen",
+    "suomalaiset",
+    "helsinki",
+    "lapland",
+    "lappi",
+    "kurejoki",
+    "alajärvi",
+    "alajarvi",
+    "etelä-pohjanmaa",
+    "etelapohjanmaa",
+    "south ostrobothnia",
+]
+
+# Ulkomaisia uutislähteitä – kaikki ulkomaista mediaa
 SOURCES = [
     {
-        "name": "Yle News (EN)",
+        "name": "BBC World",
         "lang": "en",
-        "url": "https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_NEWS_ENGLISH.rss",
+        "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
     },
     {
-        "name": "Yle Uutiset (FI)",
-        "lang": "fi",
-        "url": "https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss",
+        "name": "BBC Europe",
+        "lang": "en",
+        "url": "https://feeds.bbci.co.uk/news/world/europe/rss.xml",
     },
     {
         "name": "Reuters World News",
         "lang": "en",
         "url": "https://feeds.reuters.com/reuters/worldNews",
+    },
+    {
+        "name": "DW World",
+        "lang": "en",
+        "url": "https://rss.dw.com/rdf/rss-en-world",
+    },
+    {
+        "name": "AP World",
+        "lang": "en",
+        "url": "https://rss.apnews.com/apf-intlnews",
+    },
+    {
+        "name": "The Guardian World",
+        "lang": "en",
+        "url": "https://www.theguardian.com/world/rss",
+    },
+    {
+        "name": "NYTimes World",
+        "lang": "en",
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+    },
+    {
+        "name": "CNN World",
+        "lang": "en",
+        "url": "https://rss.cnn.com/rss/edition_world.rss",
+    },
+    {
+        "name": "Euronews",
+        "lang": "en",
+        "url": "https://www.euronews.com/rss?level=theme&name=news",
+    },
+    {
+        "name": "Al Jazeera",
+        "lang": "en",
+        "url": "https://www.aljazeera.com/xml/rss/all.xml",
     },
 ]
 
@@ -81,6 +135,11 @@ def iso_date_from_entry(entry) -> str:
 # --- Uutisten keruu --------------------------------------------------------
 
 
+def text_matches_keywords(text: str) -> bool:
+    t = text.lower()
+    return any(kw in t for kw in KEYWORDS)
+
+
 def collect_news() -> dict:
     history = load_history()
 
@@ -102,9 +161,8 @@ def collect_news() -> dict:
             if not title or not link:
                 continue
 
-            text = f"{title} {summary}".lower()
-            # Poimi vain jutut joissa mainitaan Suomi / Finland
-            if "finland" not in text and "suomi" not in text and "finnish" not in text:
+            text = f"{title} {summary}"
+            if not text_matches_keywords(text):
                 continue
 
             if link in known_links:
@@ -158,7 +216,7 @@ def build_recent_html(history: dict) -> str:
         )
 
     if not rows:
-        return '  <li class="muted">Ei Suomiaiheisia uutisia viimeisen 7 päivän ajalta.</li>'
+        return '  <li class="muted">Ei Suomiaiheisia tai Kurejoki/Alajärvi/Etelä-Pohjanmaa -uutisia viimeisen 7 päivän ajalta.</li>'
 
     return "\n".join(rows)
 
@@ -210,7 +268,9 @@ def build_archive_pages_and_index_list(history: dict) -> str:
     <header class="site-header">
       <h1>Uutisia Suomesta – {year}</h1>
       <p class="tagline">
-        Vuoden {year} aikana eri kielissä julkaistuja uutisia, joissa mainitaan Suomi tai suomalaiset.
+        Vuoden {year} aikana ulkomaisissa medioissa julkaistuja uutisia,
+        joissa mainitaan Suomi, suomalaiset tai esimerkiksi Kurejoki, Alajärvi
+        tai Etelä-Pohjanmaa.
       </p>
     </header>
 
