@@ -115,7 +115,6 @@ SOURCES = [
      "url": "https://en.mercopress.com/rss"},
 ]
 
-
 # --- Historia-tiedosto ----------------------------------------------------
 
 
