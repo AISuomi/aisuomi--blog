@@ -3,7 +3,7 @@ name: AISuomi – päivittäiset kirjoitukset
 on:
   schedule:
     - cron: "15 4 * * *"   # joka päivä klo 04:15 UTC
-    - cron: "15 16 * * *"
+    - cron: "15 16 * * *"   # klo 16:15 UTC
   workflow_dispatch:
 
   workflow_dispatch:        # voit ajaa käsin testiksi
