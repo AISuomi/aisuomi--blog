@@ -34,11 +34,6 @@ KEYWORDS = [
 
 # Ulkomaisia uutislähteitä – kaikki ulkomaista mediaa
 SOURCES = [
-    # --- SUOMI / LÄHIMMÄT LÄHTEET ---
-    {"name": "Yle News (EN)", "lang": "en",
-     "url": "https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_NEWS_ENGLISH.rss"},
-    {"name": "Yle Uutiset (FI)", "lang": "fi",
-     "url": "https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss"},
 
     # --- KANSAINVÄLISET UUTISTOIMISTOT ---
     {"name": "Reuters World News", "lang": "en",
