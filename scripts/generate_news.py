@@ -34,56 +34,85 @@ KEYWORDS = [
 
 # Ulkomaisia uutislähteitä – kaikki ulkomaista mediaa
 SOURCES = [
-    {
-        "name": "BBC World",
-        "lang": "en",
-        "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
-    },
-    {
-        "name": "BBC Europe",
-        "lang": "en",
-        "url": "https://feeds.bbci.co.uk/news/world/europe/rss.xml",
-    },
-    {
-        "name": "Reuters World News",
-        "lang": "en",
-        "url": "https://feeds.reuters.com/reuters/worldNews",
-    },
-    {
-        "name": "DW World",
-        "lang": "en",
-        "url": "https://rss.dw.com/rdf/rss-en-world",
-    },
-    {
-        "name": "AP World",
-        "lang": "en",
-        "url": "https://rss.apnews.com/apf-intlnews",
-    },
-    {
-        "name": "The Guardian World",
-        "lang": "en",
-        "url": "https://www.theguardian.com/world/rss",
-    },
-    {
-        "name": "NYTimes World",
-        "lang": "en",
-        "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
-    },
-    {
-        "name": "CNN World",
-        "lang": "en",
-        "url": "https://rss.cnn.com/rss/edition_world.rss",
-    },
-    {
-        "name": "Euronews",
-        "lang": "en",
-        "url": "https://www.euronews.com/rss?level=theme&name=news",
-    },
-    {
-        "name": "Al Jazeera",
-        "lang": "en",
-        "url": "https://www.aljazeera.com/xml/rss/all.xml",
-    },
+    # --- SUOMI / LÄHIMMÄT LÄHTEET ---
+    {"name": "Yle News (EN)", "lang": "en",
+     "url": "https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_NEWS_ENGLISH.rss"},
+    {"name": "Yle Uutiset (FI)", "lang": "fi",
+     "url": "https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss"},
+
+    # --- KANSAINVÄLISET UUTISTOIMISTOT ---
+    {"name": "Reuters World News", "lang": "en",
+     "url": "https://feeds.reuters.com/reuters/worldNews"},
+    {"name": "AP News World", "lang": "en",
+     "url": "https://apnews.com/hub/apf-intlnews?format=xml"},
+
+    # --- EUROOPPA / EU ---
+    {"name": "BBC World", "lang": "en",
+     "url": "http://feeds.bbci.co.uk/news/world/rss.xml"},
+    {"name": "BBC Europe", "lang": "en",
+     "url": "http://feeds.bbci.co.uk/news/world/europe/rss.xml"},
+    {"name": "Guardian World", "lang": "en",
+     "url": "https://www.theguardian.com/world/rss"},
+    {"name": "Guardian Europe", "lang": "en",
+     "url": "https://www.theguardian.com/world/europe-news/rss"},
+    {"name": "DW News", "lang": "en",
+     "url": "https://rss.dw.com/rdf/rss-en-all"},
+    {"name": "Euronews", "lang": "en",
+     "url": "https://www.euronews.com/rss?level=theme&name=news"},
+    {"name": "Politico Europe", "lang": "en",
+     "url": "https://www.politico.eu/feed/"},
+    {"name": "France24 World", "lang": "en",
+     "url": "https://www.france24.com/en/rss"},
+    {"name": "EUobserver", "lang": "en",
+     "url": "https://euobserver.com/rss"},
+
+    # --- USA / POHJOIS-AMERIKKA ---
+    {"name": "CNN World", "lang": "en",
+     "url": "http://rss.cnn.com/rss/edition_world.rss"},
+    {"name": "CNN Europe", "lang": "en",
+     "url": "http://rss.cnn.com/rss/edition_europe.rss"},
+    {"name": "New York Times World", "lang": "en",
+     "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml"},
+    {"name": "Washington Post World", "lang": "en",
+     "url": "http://feeds.washingtonpost.com/rss/world"},
+    {"name": "CBC World (Canada)", "lang": "en",
+     "url": "https://www.cbc.ca/cmlink/rss-world"},
+
+    # --- AASIA / OSEANIA ---
+    {"name": "Japan Times", "lang": "en",
+     "url": "https://www.japantimes.co.jp/feed/"},          # yleisfeed, sisältää uutisia
+    {"name": "ABC Australia World", "lang": "en",
+     "url": "https://www.abc.net.au/news/feed/51120/rss.xml"},
+    {"name": "The Straits Times (Singapore, World)", "lang": "en",
+     "url": "https://www.straitstimes.com/global/rss.xml"},
+
+    # Intia
+    {"name": "Times of India World", "lang": "en",
+     "url": "https://timesofindia.indiatimes.com/rssfeeds/296589292.cms"},
+    {"name": "Hindustan Times World", "lang": "en",
+     "url": "https://www.hindustantimes.com/feeds/rss/world-news/rssfeed.xml"},
+
+    # Kiina / Hongkong (englanniksi)
+    {"name": "South China Morning Post", "lang": "en",
+     "url": "https://www.scmp.com/rss/91/feed"},
+
+    # --- LÄHI-ITÄ ---
+    {"name": "Al Jazeera – All News", "lang": "en",
+     "url": "https://www.aljazeera.com/xml/rss/all.xml"},
+    {"name": "Arab News", "lang": "en",
+     "url": "https://www.arabnews.com/rss"},
+    {"name": "Jerusalem Post World", "lang": "en",
+     "url": "https://www.jpost.com/Rss/RssFeedsWorldNews"},
+
+    # --- AFRIKKA ---
+    {"name": "AfricaNews", "lang": "en",
+     "url": "https://www.africanews.com/feed/rss/"},
+
+    # --- LATINALAINEN AMERIKKA ---
+    {"name": "Rio Times (Brazil, EN)", "lang": "en",
+     "url": "https://riotimesonline.com/world-news/feed/"},
+    {"name": "MercoPress (South Atlantic / LatAm)", "lang": "en",
+     "url": "https://en.mercopress.com/rss"},
 ]
 
 
