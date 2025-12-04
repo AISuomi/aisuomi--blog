@@ -180,7 +180,27 @@ def collect_news() -> dict:
     new_items = []
 
     for src in SOURCES:
-        feed = feedparser.parse(src["url"])
+        url = src["url"]
+        name = src["name"]
+        print(f"Haetaan uutisia lähteestä: {name} ({url})")
+
+        # Suojataan yksittäisen lähteen kaatuminen
+        try:
+            feed = feedparser.parse(url)
+        except Exception as e:
+            print(f"VAROITUS: Lähteen '{name}' haku epäonnistui: {e}")
+            continue
+
+        # Jos parsinta epäonnistui tai ei ole entries-listaa
+        if not getattr(feed, "entries", None):
+            bozo = getattr(feed, "bozo", False)
+            bozo_exc = getattr(feed, "bozo_exception", None)
+            print(
+                f"VAROITUS: Lähteen '{name}' syöte tyhjä tai virheellinen "
+                f"(bozo={bozo}, exc={bozo_exc})"
+            )
+            continue
+
         for entry in feed.entries:
             title = getattr(entry, "title", "").strip()
             link = getattr(entry, "link", "").strip()
@@ -189,8 +209,10 @@ def collect_news() -> dict:
             if not title or not link:
                 continue
 
-            text = f"{title} {summary}"
-            if not text_matches_keywords(text):
+            text = f"{title} {summary}".lower()
+
+            # Poimi vain jutut, joissa mainitaan jokin avainsanoista
+            if not any(word in text for word in KEYWORDS):
                 continue
 
             if link in known_links:
@@ -199,8 +221,8 @@ def collect_news() -> dict:
             item = {
                 "title": title,
                 "link": link,
-                "source": src["name"],
-                "lang": src["lang"],
+                "source": name,
+                "lang": src.get("lang", "en"),
                 "published": iso_date_from_entry(entry),
             }
             new_items.append(item)
@@ -209,7 +231,9 @@ def collect_news() -> dict:
     if new_items:
         history["items"].extend(new_items)
         # Uusimmat ensin
-        history["items"].sort(key=lambda x: x.get("published", ""), reverse=True)
+        history["items"].sort(
+            key=lambda x: x.get("published", "1970-01-01"), reverse=True
+        )
         # Pidetään historia hillittynä
         history["items"] = history["items"][:1000]
 
