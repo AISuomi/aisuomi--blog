@@ -55,6 +55,21 @@ SOURCES = [
         "lang": "en",
         "url": "https://rss.dw.com/rdf/rss-en-world",
     },
+        {
+        "name": "Le Monde (FR)",
+        "lang": "fr",
+        "url": "https://www.lemonde.fr/rss/une.xml",
+    },
+    {
+        "name": "El País (ES)",
+        "lang": "es",
+        "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/internacional",
+    },
+    {
+        "name": "Der Spiegel (DE)",
+        "lang": "de",
+        "url": "https://www.spiegel.de/international/index.rss",
+    },
     {
         "name": "DW Europe",
         "lang": "en",
