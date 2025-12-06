@@ -22,16 +22,22 @@ NEWS_INDEX_PAGE = ROOT / "uutisiasuomesta.html"
 
 KEYWORDS = [
     # Suomi yleisesti
-    "finland",
+  "finland",
     "finnish",
+    "finns",
     "suomi",
+    "suomalainen",
+    "suomalaiset",
 
     # Paikat
+
+    "helsinki",
+    "lapland",
+    "lappi",
     "kurejoki",
     "alajärvi",
     "alajarvi",
     "etelä-pohjanmaa",
-    "etela-pohjanmaa",
     "etelapohjanmaa",
     "south ostrobothnia",
 ]
