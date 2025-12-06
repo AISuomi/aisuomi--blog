@@ -215,11 +215,6 @@ def iso_date_from_entry(entry) -> str:
 
 
 def collect_news() -> dict:
-    """
-    Hakee uutisia kaikista SOURCES-lähteistä,
-    suodattaa vain jutut joissa esiintyy jokin KEYWORDS-avainsanoista,
-    ja palauttaa päivitetyn history-dictin.
-    """
     history = load_history()
 
     known_links = {
@@ -231,26 +226,14 @@ def collect_news() -> dict:
     new_items = []
 
     for src in SOURCES:
-        url = src["url"]
-        name = src["name"]
-        print(f"Haetaan uutisia lähteestä: {name} ({url})")
+        feed = feedparser.parse(src["url"])
 
-        # Suojataan yksittäisen lähteen kaatuminen
-        try:
-            feed = feedparser.parse(url)
-        except Exception as e:
-            print(f"VAROITUS: Lähteen '{name}' haku epäonnistui: {e}")
-            continue
+        print(f"Haetaan uutisia lähteestä: {src['name']} ({src['url']})")
 
-        # Jos parsinta epäonnistui tai ei ole entries-listaa
-        if not getattr(feed, "entries", None):
-            bozo = getattr(feed, "bozo", False)
-            bozo_exc = getattr(feed, "bozo_exception", None)
-            print(
-                f"VAROITUS: Lähteen '{name}' syöte tyhjä tai virheellinen "
-                f"(bozo={bozo}, exc={bozo_exc})"
-            )
-            continue
+        # Feed voi olla virheellinen
+        if feed.bozo:
+            print(f"VAROITUS: Lähteen '{src['name']}' syöte tyhjä tai virheellinen "
+                  f"(bozo={feed.bozo}, exc={feed.bozo_exception})")
 
         for entry in feed.entries:
             title = getattr(entry, "title", "").strip()
@@ -260,9 +243,9 @@ def collect_news() -> dict:
             if not title or not link:
                 continue
 
-                       text = f"{title} {summary}".lower()
+            text = f"{title} {summary}".lower()
 
-            # Poimi vain jutut joissa mainitaan jokin ALL_KEYWORDS-listan termeistä
+            # Poimi vain jutut joissa esiintyy jokin ALL_KEYWORDS -listasta
             if not any(kw in text for kw in ALL_KEYWORDS):
                 continue
 
@@ -272,23 +255,21 @@ def collect_news() -> dict:
             item = {
                 "title": title,
                 "link": link,
-                "source": name,
-                "lang": src.get("lang", "en"),
+                "source": src["name"],
+                "lang": src["lang"],
                 "published": iso_date_from_entry(entry),
             }
+
             new_items.append(item)
             known_links.add(link)
 
     if new_items:
         history["items"].extend(new_items)
-        # Uusimmat ensin
-        history["items"].sort(
-            key=lambda x: x.get("published", "1970-01-01"), reverse=True
-        )
-        # Pidetään historia hillittynä
-        history["items"] = history["items"][:1000]
+        history["items"].sort(key=lambda x: x.get("published", ""), reverse=True)
+        history["items"] = history["items"][:2000]  # kasvatin historian max-kokoa
 
     return history
+
 
 
 # ---------------------------------------------------------------------------
