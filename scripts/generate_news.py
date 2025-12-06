@@ -135,6 +135,25 @@ SOURCES = [
     },
 ]
 
+# --- Hakusanat: mikä lasketaan Suomi-aiheiseksi ---------------------------
+
+KEYWORDS_COUNTRY = [
+    "finland",
+    "finnish",
+    "suomi",
+]
+
+KEYWORDS_LOCAL = [
+    "kurejoki",
+    "alajärvi",
+    "etelä-pohjanmaa",
+    "eteläpohjanmaa",
+    "lappi",
+    "lapland",
+    "saame",
+]
+
+ALL_KEYWORDS = KEYWORDS_COUNTRY + KEYWORDS_LOCAL
 
 # ---------------------------------------------------------------------------
 # HISTORIA-TIEDOSTO
@@ -241,10 +260,10 @@ def collect_news() -> dict:
             if not title or not link:
                 continue
 
-            text = f"{title} {summary}".lower()
+                       text = f"{title} {summary}".lower()
 
-            # Poimi vain jutut, joissa mainitaan jokin avainsanoista
-            if not any(word in text for word in KEYWORDS):
+            # Poimi vain jutut joissa mainitaan jokin ALL_KEYWORDS-listan termeistä
+            if not any(kw in text for kw in ALL_KEYWORDS):
                 continue
 
             if link in known_links:
@@ -278,9 +297,78 @@ def collect_news() -> dict:
 
 
 def build_recent_html(history: dict) -> str:
+    """Uusimmat 7 päivän uutiset <li>-elementteinä.
+
+    Jaetaan kahteen ryhmään:
+    - 'keskeiset' = otsikko/summary sisältää jonkin KEYWORDS_COUNTRY-sanan
+    - 'muut' = sisältää vain paikallisia sanoja (KEYWORDS_LOCAL),
+      mutta ei KEYWORDS_COUNTRY-sanoja.
     """
-    Rakentaa uusimmat 7 päivän uutiset <li>-elementteinä.
-    """
+
+    cutoff = datetime.utcnow().date() - timedelta(days=7)
+
+    primary_rows = []   # keskeiset Suomi-maininnat
+    other_rows = []     # muut paikalliset/alueelliset maininnat
+
+    for item in history["items"]:
+        try:
+            d = datetime.strptime(item.get("published", "1970-01-01"), "%Y-%m-%d").date()
+        except Exception:
+            continue
+
+        if d < cutoff:
+            continue
+
+        title_raw = item.get("title", "").strip()
+        link_raw = item.get("link", "").strip()
+        source_raw = item.get("source", "")
+        lang_raw = item.get("lang", "").upper()
+
+        title = html.escape(title_raw)
+        link = html.escape(link_raw)
+        source = html.escape(source_raw)
+        lang = html.escape(lang_raw)
+
+        # Luokitellaan kahteen ryhmään tekstin sisältöjen perusteella
+        text_lower = f"{title_raw} {source_raw}".lower()
+
+        has_country = any(kw in text_lower for kw in KEYWORDS_COUNTRY)
+        has_local = any(kw in text_lower for kw in KEYWORDS_LOCAL)
+
+        line = (
+            f'  <li><a href="{link}" target="_blank" rel="noopener">'
+            f"{title} – {source} ({lang})</a></li>"
+        )
+
+        if has_country:
+            primary_rows.append(line)
+        elif has_local:
+            other_rows.append(line)
+        else:
+            # Varmuuden vuoksi: jos tähän päädytään, työnnetään "muut"-ryhmään
+            other_rows.append(line)
+
+    # Jos ei mitään uutta 7 päivän ajalta
+    if not primary_rows and not other_rows:
+        return '  <li class="muted">Ei Suomiaiheisia uutisia viimeisen 7 päivän ajalta.</li>'
+
+    # Rakennetaan yksi lista, jossa ensin keskeiset, sitten muut
+    rows: list[str] = []
+
+    if primary_rows:
+        rows.append('  <li class="section-title"><strong>Keskeiset Suomi-maininnat</strong></li>')
+        rows.extend(primary_rows)
+
+    if other_rows:
+        # Erotin, jos molempia on
+        if primary_rows:
+            rows.append('  <li class="section-title"><strong>Muut Suomi-aiheiset maininnat</strong></li>')
+        else:
+            rows.append('  <li class="section-title"><strong>Suomi-aiheiset maininnat</strong></li>')
+        rows.extend(other_rows)
+
+    return "\n".join(rows)
+
     cutoff = datetime.utcnow().date() - timedelta(days=7)
     rows = []
 
