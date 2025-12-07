@@ -70,224 +70,185 @@ def call_openai(system_prompt: str, user_prompt: str) -> str:
 
     return content
 
-
 def generate_article(kind: str) -> str:
     """
     Palauttaa HTML-leipätekstin annetulle kategoriatyypille.
     kind: identiteetti | villi | talous | ruoka | yhteiskunta | teema
     """
-    # Perusraamit kaikille
+
+    # Yhteinen perusrooli kaikille teksteille
     system_prompt = (
-        "Olet AISuomi-blogin automaattinen kirjoituskone. "
-        "Kirjoitat selkeää, rauhallista ja neutraalia suomen kieltä. "
-        "Vältät politiikkaa, puolueita, ideologioita (kuten woke/maga/"
-        "äärifeminismi/äärisovinismi), uskonnollisia kiistoja, sotaa, "
-        "rokotekeskusteluja, rajua väkivaltaa, seksiä, päihteitä ja muuta "
-        "lapsille sopimatonta sisältöä. Kirjoitat niin, että teksti sopii "
-        "kaikenikäisille lukijoille. Tuotat vastauksen HTML-leipätekstinä "
-        "ilman <html>, <head> tai <body> -tageja. Et lisää mainoksia etkä "
-        "kehotuksia kommentoida."
+        "Olet AISuomi-blogin autonominen kirjoituskone. "
+        "Saat valita aiheet vapaasti: arjesta, tunteista, historiasta, "
+        "yhteiskunnasta, taloudesta, luonnosta, teknologiasta, "
+        "kuvitteellisista tarinoista, runoudesta tai mistä tahansa "
+        "blogitekstiin sopivasta aiheesta. "
+        "Kirjoitat sujuvaa, selkeää suomea ja pyrit olemaan ajatteleva, "
+        "välillä leikkisä, välillä pohdiskeleva. "
+        "Vastauksesi on pelkkää HTML-leipätekstiä ilman <html>, <head> "
+        "tai <body> -tageja."
     )
 
-    # Kategorikohtaiset ohjeet
+    # Kevyet vihjeet kullekin kategorialle: nämä eivät rajoita aihetta, vaan vain näkökulmaa.
     if kind == "identiteetti":
-        topic_instruction = (
-            "suomalaisuudesta, Suomesta, suomen kielestä tai suomalaisesta "
-            "arjesta, historiasta, luonnosta tai kulttuurista. "
-            "Vältä päivänpolitiikkaa, puolueita, vaaleja, hallituksia, "
-            "ulkopolitiikkaa ja kansainvälisiä konflikteja. "
-            "Älä ota kantaa ideologioihin (esim. woke, maga, erilaiset "
-            "äärifeminismi- tai äärisovinismi-keskustelut, uskonnolliset kiistat, "
-            "ilmastokiistat, rokotekeskustelut). "
-            "Kirjoita kuin yleisölle, jossa voi olla myös lapsia: "
-            "siisti, asiallinen, rauhallinen sävy."
+        topic_hint = (
+            "Voit halutessasi sivuta Suomea, suomalaisuutta, kieltä, kulttuuria "
+            "tai jonkinlaista identiteetti- tai kuuluvuusteemaa, mutta et ole "
+            "sidottu näihin. Saat valita aiheen vapaasti."
         )
         structure_instruction = """
 Käytä rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt ingressi, 1–3 virkettä.</p>
+<p>Lyhyt ingressi, 1–3 virkettä, joka johdattaa tekstiin.</p>
 
-<h2>Alaotsikko</h2>
-<p>Useampi kappale leipätekstiä.</p>
+<h2>Ensimmäinen näkökulma</h2>
+<p>Kirjoita useampi kappale, joissa avaat valitsemaasi aihetta rauhassa.</p>
 
-<h2>Toinen alaotsikko</h2>
-<p>Lisää selkeää tekstisisältöä.</p>
+<h2>Toinen näkökulma</h2>
+<p>Syvennä tai laajenna aihetta uudesta kulmasta.</p>
 """
-
     elif kind == "villi":
-        topic_instruction = (
-            "vapaasta ja mielikuvituksellisesta mutta harmittomasta aiheesta, "
-            "joka liittyy esimerkiksi arkeen, luontoon, ihmisten väliseen "
-            "ystävällisyyteen, luoviin ajatuksiin, filosofiaan, kevyisiin "
-            "tulevaisuuskuviin tai arkisiin oivalluksiin. "
-            "Vältä täysin politiikkaa, ideologioita, sotaa, rikoksia, "
-            "väkivaltaa, päihteitä, seksiä, syrjintää ja muita "
-            "riitaisiksi tai ronskeiksi koettuja aiheita. "
-            "Teksti saa olla outo tai leikkisä, mutta aina siten, että "
-            "se sopii myös lapsen luettavaksi."
+        topic_hint = (
+            "Saat kirjoittaa täysin vapaasti mistä tahansa aiheesta. "
+            "Voit kertoa tarinan, unenomaisen kuvauksen, mielikuvitusmatkan "
+            "tai jonkin kokonaan keksityn ilmiön. Sinun ei tarvitse olla "
+            "realistinen."
         )
         structure_instruction = """
 Käytä rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt ingressi, 1–3 virkettä.</p>
+<p>Lyhyt ingressi, joka luo tunnelman tai herättää uteliaisuuden.</p>
 
-<h2>Alaotsikko</h2>
-<p>Useampi kappale leipätekstiä.</p>
+<h2>Maailma tai tilanne</h2>
+<p>Kuvaile maailma, tilanne tai asetelma, jossa tarina tai ajatus liikkuu.</p>
 
-<h2>Toinen alaotsikko</h2>
-<p>Lisää luovaa mutta rauhallista tekstisisältöä.</p>
+<h2>Mitä tästä seuraa?</h2>
+<p>Jatka tarinaa, ajatusta tai outoa ilmiötä omalla vapaalla tyylilläsi.</p>
 """
-
     elif kind == "talous":
-        topic_instruction = (
-            "Suomen talouteen, arjen talouteen, hintatasoon tai "
-            "talouden ilmiöihin liittyvästä aiheesta. "
-            "Kerro ilmiöistä yleisellä tasolla ilman yksityiskohtaisia "
-            "ohjeita yksittäisiin osakkeisiin tai rahastoihin. "
-            "Kuvaile suuntaa-antavasti, mitä tekijöitä voi pitää "
-            "nousevina ja mitä laskevina, mutta älä anna "
-            "henkilökohtaisia sijoitusneuvoja."
+        topic_hint = (
+            "Kirjoita taloudesta laajassa mielessä: se voi olla Suomen talous, "
+            "arkitalous, hintataso, työ, yrittäjyys, rahaan liittyvät ilmiöt "
+            "tai vaikkapa tulevaisuuden talousskenaariot. Saat valita aiheen "
+            "vapaasti talouden ympäriltä."
         )
         structure_instruction = """
 Käytä rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt ingressi, 1–3 virkettä talouden ilmiöstä.</p>
+<p>Lyhyt ingressi, joka kertoo mistä talousilmiöstä tai näkökulmasta on kyse.</p>
 
-<h2>Taustaa</h2>
-<p>Kuvaile aihetta rauhallisesti ja selkeästi useamman kappaleen verran.</p>
+<h2>Taustaa ja ilmiön kuvaus</h2>
+<p>Kuvaile ilmiötä tai aihetta useamman kappaleen verran.</p>
 
-<h2>Nousevat ilmiöt</h2>
-<ul>
-  <li>Kuvaile yksi talouteen liittyvä nouseva ilmiö tai sijoituskohdetyyppi yleisellä tasolla.</li>
-  <li>Kuvaile toinen nouseva ilmiö tai sijoituskohdetyyppi yleisellä tasolla.</li>
-</ul>
+<h2>Mitä tämä voi tarkoittaa arjessa?</h2>
+<p>Pohdi, miten ilmiö näkyy yksilöiden, perheiden tai yhteiskunnan tasolla.</p>
 
-<h2>Laskevat ilmiöt</h2>
-<ul>
-  <li>Kuvaile yksi laskeva tai varovaisuutta vaativa ilmiö yleisellä tasolla.</li>
-  <li>Kuvaile toinen laskeva tai varovaisuutta vaativa ilmiö yleisellä tasolla.</li>
-</ul>
-
-<p>Loppuun lisää selkeä kappale, jossa kerrot, että teksti ei ole
-sijoitusneuvoja vaan viihteellistä, yleisluonteista pohdintaa.</p>
+<p>Loppuun lisää lyhyt kappale, jossa kerrot, että teksti on yleistä pohdintaa "
+"eikä henkilökohtaista sijoitus- tai talousneuvontaa.</p>
 """
-
     elif kind == "ruoka":
-        topic_instruction = (
-            "ruoasta, ruuanlaitosta, ruokakulttuurista tai arjen syömisestä. "
-            "Voit käsitellä esimerkiksi sesongin raaka-aineita, "
-            "arkiruokaa tai rauhallista yhdessä syömisen tunnelmaa."
+        topic_hint = (
+            "Kirjoita ruoasta, ruuanlaitosta, ruokakulttuurista, juhla- tai "
+            "arkiruokailusta, resepteistä tai vaikkapa jonkin raaka-aineen "
+            "tarinasta. Saat valita aiheen vapaasti ruoan ympäriltä."
         )
         structure_instruction = """
 Käytä rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt ingressi, 1–3 virkettä ruokateemasta.</p>
+<p>Lyhyt ingressi, joka kertoo mikä ruokaan liittyvä teema on käsittelyssä.</p>
 
-<h2>Ruokatarina tai teema</h2>
-<p>Kuvaile aihetta useamman kappaleen verran.</p>
+<h2>Tarina tai teema</h2>
+<p>Kuvaile ruokaan liittyvää tarinaa, kokemusta tai ilmiötä muutaman kappaleen verran.</p>
 
-<h2>Viikon ruokalista</h2>
-<p>Esittele viikon ruokalista arkipäiville ja viikonlopulle.</p>
-<ul>
-  <li>Päivä + ruokalaji + lyhyt kuvaus.</li>
-  <li>Toista, kunnes viikko on käsitelty.</li>
-</ul>
-
-<h2>Reseptipoimintoja</h2>
-<p>Valitse 1–3 ruokalajia listasta ja anna niihin lyhyet reseptit
-(ainesosat ja valmistusohje tiiviisti).</p>
+<h2>Ideoita ja käytännön esimerkkejä</h2>
+<p>Anna esimerkkejä arjen ruuista, resepteistä, ideoista tai tavoista syödä rauhassa.</p>
 """
-
     elif kind == "yhteiskunta":
-        topic_instruction = (
-            "Suomen yhteiskunnallisesta rakenteesta, historiasta, "
-            "palveluista tai arjen järjestelmistä (esim. koulu, terveydenhuolto, "
-            "liikenne, verotus) kuvailevalla ja neutraalilla tavalla. "
-            "Vältä vahvoja mielipiteitä ja selkeää puolesta–tai–vastaan-asettelua. "
-            "Kuvaa ilmiöitä monipuolisesti ja faktapainotteisesti."
+        topic_hint = (
+            "Kirjoita yhteiskunnasta: arjen järjestelmistä, historiasta, "
+            "palveluista, koulusta, terveydenhuollosta, liikenteestä, "
+            "työelämästä, hallinnosta tai mistä tahansa tavallisen ihmisen "
+            "kokemaa yhteiskuntaa sivuavasta teemasta. Saat käsitellä myös "
+            "vaikeampia aiheita, mutta omaan rauhalliseen tyyliisi."
         )
         structure_instruction = """
 Käytä rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt ingressi, 1–3 virkettä yhteiskunnallisesta ilmiöstä.</p>
+<p>Lyhyt ingressi, joka johdattaa valitsemaasi yhteiskunnalliseen aiheeseen.</p>
 
 <h2>Mistä ilmiössä on kyse?</h2>
-<p>Kuvaile taustaa ja nykytilannetta neutraalisti.</p>
+<p>Kuvaile taustaa ja nykytilannetta useamman kappaleen verran.</p>
 
-<h2>Miten tämä näkyy arjessa?</h2>
-<p>Anna esimerkkejä ilman vahvaa kannanottoa.</p>
-
-<p>Loppuun lisää lyhyt kappale, jossa muistutat, että teksti
-on yleisluonteinen kuvaus eikä ota kantaa puoluepolitiikkaan.</p>
+<h2>Miten tämä osuu ihmisen arkeen?</h2>
+<p>Pohdi, miten ilmiö näkyy yksilön tai yhteisön tasolla, ja millaisia "
+"ajatuksia se voi herättää.</p>
 """
-
     elif kind == "teema":
-        # Joulu / uusivuosi / yleinen runoteema
-        if TODAY.month == 12 and TODAY.day <= 25:
-            # Joulu
-            topic_instruction = (
-                "jouluisesta ja rauhallisesta tunnelmasta, talvisesta luonnosta tai "
-                "lempeästä joulunvietosta. Voit viitata myös kristilliseen "
-                "joulun perinteeseen (esimerkiksi hiljainen yö, enkelit, "
-                "tähdet), mutta ilman voimakasta julistusta."
+        # Teemablogi: joulun aika, uusivuosi tai muu ajankohtainen / vapaa runoteema
+        today = TODAY  # käytetään jo määriteltyä globaalimuuttujaa
+        if today.month == 12 and today.day <= 25:
+            topic_hint = (
+                "Kirjoita joulun ajan tai talvisen kauden tunnelmasta. "
+                "Voit käyttää perinteisiä joulun kuvia, mutta tulkinta on vapaa."
             )
-        elif (TODAY.month == 12 and TODAY.day > 25) or (TODAY.month == 1 and TODAY.day == 1):
-            # Uusivuosi
-            topic_instruction = (
-                "uuden vuoden tunnelmasta, toiveikkuudesta, rauhallisesta "
-                "vuodenvaihteesta ja pienistä päätöksistä. Vältä kuvaamasta "
-                "päihteitä tai rajuja ilotulitteita, keskity ennemmin valoon, "
-                "hiljaisuuteen ja tulevaisuuden toivoon."
+        elif (today.month == 12 and today.day > 25) or (today.month == 1 and today.day == 1):
+            topic_hint = (
+                "Kirjoita vuodenvaihteesta, uuden vuoden alusta, toiveista, "
+                "muutoksesta tai hiljaisesta siirtymästä vanhasta uuteen."
             )
         else:
-            # Yleinen runo/laulu myöhemmin
-            topic_instruction = (
-                "lyhyestä runosta tai laulunomaisesta tekstistä, joka liittyy "
-                "esimerkiksi vuodenaikaan, luontoon, arkeen tai ystävällisyyteen. "
-                "Teksti saa olla leikittelevä, mutta rauhallinen ja kaikenikäisille sopiva."
+            topic_hint = (
+                "Kirjoita runo tai laulunomainen teksti jostakin ajankohtaisesta "
+                "tai sinua inspiroivasta teemasta: vuodenajoista, ihmisistä, "
+                "luonnosta, liikkeestä, hiljaisuudesta tai mistä tahansa."
             )
-
         structure_instruction = """
 Kirjoita runomuotoinen tai laulunomainen teksti käyttäen HTML-rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt johdanto, 1–3 virkettä.</p>
+<p>Lyhyt johdanto, 1–3 virkettä, joka virittää tunnelman.</p>
 
 <h2>Runo</h2>
-<p>Kirjoita runo niin, että jokainen säe tai pari säettä on omassa rivissään
-(esimerkiksi <br>-tagien avulla) tai omissa kappaleissaan.</p>
+<p>Kirjoita runo niin, että säkeet erotellaan <br>-tägeillä tai kappaleilla.</p>
 """
-
     else:
-        # Varmuuden vuoksi: käsitellään kuin identiteetti
-        topic_instruction = (
-            "suomalaisuudesta, Suomesta tai suomalaisesta arjesta neutraalisti."
+        # Fallback, jos tulevaisuudessa lisätään jokin uusi kind
+        topic_hint = (
+            "Saat valita aiheen vapaasti ja kirjoittaa siitä blogitekstin "
+            "suomeksi. Voit käsitellä arkea, tunteita, historiaa, tarinoita, "
+            "yhteiskuntaa, taloutta, luontoa tai mitä tahansa muuta aihetta."
         )
         structure_instruction = """
 <h1>Otsikko</h1>
 <p>Lyhyt ingressi.</p>
+
+<h2>Ensimmäinen osa</h2>
+<p>Useampi kappale, joissa avaat aihetta.</p>
+
+<h2>Toinen osa</h2>
+<p>Jatka tai syvennä aihetta omalla tavallasi.</p>
 """
 
     user_prompt = f"""
-Kirjoita suomenkielinen blogiteksti. Muotoile vastauksesi pelkkänä
-HTML-sisältönä ilman <html>, <head> tai <body> -tageja.
+Kirjoita suomenkielinen blogiteksti AISuomi-sivustolle.
 
-Aiheen tulee olla {topic_instruction}
+Saat valita aiheen vapaasti. {topic_hint}
+
+Tekstin kategoria on: {kind}. Voit tulkita tämän väljästi omalla tavallasi.
+
 {structure_instruction}
 
-Loppuun lisää yksi lyhyt kappale, jossa kerrot, että teksti on
+Loppuun lisää yksi lyhyt kappale, jossa mainitset, että teksti on
 tekoälyn kokeellisesti tuottamaa sisältöä ilman ihmiseditointia.
 """
 
     return call_openai(system_prompt, user_prompt)
 
-
-def extract_title(html_body: str, kind: str) -> str:
     title = f"AISuomi – {kind} {TODAY.isoformat()}"
     start = html_body.find("<h1>")
     end = html_body.find("</h1>")
