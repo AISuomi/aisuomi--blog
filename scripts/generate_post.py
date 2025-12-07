@@ -1,6 +1,6 @@
 import os
 import json
-from datetime import datetime
+from datetime import datetime, date
 from pathlib import Path
 from textwrap import dedent
 import base64
@@ -15,7 +15,6 @@ POSTS_DIR = ROOT / "posts"
 INDEX_FILE = ROOT / "index.html"
 IMAGES_DIR = ROOT / "assets" / "images"
 IMAGE_CATEGORIES = {"identiteetti", "villi", "talous", "ruoka", "yhteiskunta", "teema"}
-
 
 # Kategoriasivut
 TALOUS_INDEX_FILE = ROOT / "talous.html"
@@ -70,245 +69,459 @@ def call_openai(system_prompt: str, user_prompt: str) -> str:
 
     return content
 
-¨def generate_article(kind: str) -> str:
+
+def generate_article(kind: str) -> str:
     """
     Palauttaa HTML-leipätekstin annetulle kategoriatyypille.
-
-    - identiteetti & villi:
-        vapaa AISuomi-tyyli, AI valitsee aiheen itse, suomalainen,
-        rauhallinen, vähäeleinen ote.
-    - talous, ruoka, yhteiskunta, teema:
-        pysyvät selvästi omissa aiheissaan.
+    kind: identiteetti | villi | talous | ruoka | yhteiskunta | teema
     """
 
-    # 1) VAPAA AISUOMI – ETUSIVU (identiteetti + villi)
-    if kind in {"identiteetti", "villi"}:
-        system_prompt = (
-            "Kirjoitat suomenkielistä blogitekstiä AISuomi-sivustolle. "
-            "Saat valita aiheen täysin vapaasti. "
-            "Tyyli on suomalainen: vähäeleinen, rauhallinen, suora ja selkeä. "
-            "Vältä ylitunteikasta tai amerikkalaista ilmaisua, liioittelua "
-            "ja suuria dramaattisia kaaria. "
-            "Käytä arkisia havaintoja, konkreettisuutta ja rehellistä sävyä. "
-            "Voit kirjoittaa mistä tahansa: arjesta, tunteista, historiasta, "
-            "yhteiskunnasta, taloudesta, luonnosta, teknologiasta, "
-            "kuvitteellisista tarinoista, runoudesta tai mistä vain keksit. "
-            "Tekstin ei tarvitse olla kaunokirjallista tai runollista, "
-            "voit kirjoittaa kuin suomalainen kirjoittaja, joka ei tee "
-            "itsestään numeroa mutta ajattelee asioita rauhassa. "
-            "Et lisää loppuun kehotuksia kommentoida, jakaa tai tilata."
+    # Yhteinen perusrooli kaikille teksteille
+    system_prompt = (
+        "Olet AISuomi-blogin autonominen kirjoituskone. "
+        "Saat valita aiheet vapaasti: arjesta, tunteista, historiasta, "
+        "yhteiskunnasta, taloudesta, luonnosta, teknologiasta, "
+        "kuvitteellisista tarinoista, runoudesta tai mistä tahansa "
+        "blogitekstiin sopivasta aiheesta. "
+        "Kirjoitat sujuvaa, selkeää suomea ja pyrit olemaan ajatteleva, "
+        "välillä leikkisä, välillä pohdiskeleva. "
+        "Vastauksesi on pelkkää HTML-leipätekstiä ilman <html>, <head> "
+        "tai <body> -tageja."
+    )
+
+    # Kevyet vihjeet kullekin kategorialle: nämä eivät rajoita aihetta, vaan vain näkökulmaa.
+    if kind == "identiteetti":
+        topic_hint = (
+            "Voit halutessasi sivuta Suomea, suomalaisuutta, kieltä, kulttuuria "
+            "tai jonkinlaista identiteetti- tai kuuluvuusteemaa, mutta et ole "
+            "sidottu näihin. Saat valita aiheen vapaasti."
         )
-
-        user_prompt = """
-Kirjoita suomenkielinen blogiteksti. AI saa päättää aiheen itse.
-
-Käytä seuraavaa rakennetta:
-
-<h1>Otsikko</h1>
-<p>Lyhyt ingressi: 1–3 virkettä, joissa kerrot mistä tekstissä
-suurin piirtein on kyse.</p>
-
-<h2>Alaotsikko</h2>
-<p>Leipätekstiä useammassa kappaleessa. Voit pohtia aihetta,
-kertoa havaintoja, kuvauksia tai ajatuksia rauhalliseen sävyyn.</p>
-
-<h2>Toinen alaotsikko</h2>
-<p>Jatka aihetta, vie ajatusta hieman eteenpäin tai sivuun:
-mitä tästä voi oppia, miltä tämä tuntuu arjessa, tai mihin suuntaan
-ajatukset vievät.</p>
-
-Loppuun lisää yksi lyhyt kappale, jossa kerrot, että teksti on
-tekoälyn kokeellisesti tuottamaa sisältöä ilman ihmisen editointia.
-"""
-        return call_openai(system_prompt, user_prompt)
-
-    # 2) TALOUS – pysyy talousaiheisena
-    if kind == "talous":
-        system_prompt = (
-            "Kirjoitat AISuomi-blogiin talousaiheisen tekstin. "
-            "Käsittelet talouden ilmiöitä yleisellä tasolla. "
-            "Et anna yksittäisiin sijoituskohteisiin kohdistuvia neuvoja, "
-            "vaan kuvailet ilmiöitä. Tyyli on rauhallinen ja selkeä."
-        )
-
-        user_prompt = """
-Kirjoita suomenkielinen talousaiheinen blogiteksti.
-
-Aiheen tulee liittyä Suomen talouteen, arjen talouteen, hintatasoon
-tai talouden ilmiöihin yleisellä tasolla.
-
+        structure_instruction = """
 Käytä rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt ingressi, 1–3 virkettä talouden ilmiöstä.</p>
+<p>Lyhyt ingressi, 1–3 virkettä, joka johdattaa tekstiin.</p>
 
-<h2>Taustaa</h2>
-<p>Kuvaile aihetta rauhallisesti ja selkeästi useamman kappaleen verran.</p>
+<h2>Ensimmäinen näkökulma</h2>
+<p>Kirjoita useampi kappale, joissa avaat valitsemaasi aihetta rauhassa.</p>
 
-<h2>Nousevat ilmiöt</h2>
-<ul>
-  <li>Kuvaile yksi talouteen liittyvä nouseva ilmiö tai sijoituskohdetyyppi yleisellä tasolla.</li>
-  <li>Kuvaile toinen nouseva ilmiö tai sijoituskohdetyyppi yleisellä tasolla.</li>
-</ul>
-
-<h2>Laskevat ilmiöt</h2>
-<ul>
-  <li>Kuvaile yksi laskeva tai varovaisuutta vaativa ilmiö yleisellä tasolla.</li>
-  <li>Kuvaile toinen laskeva tai varovaisuutta vaativa ilmiö yleisellä tasolla.</li>
-</ul>
-
-<p>Loppuun lisää selkeä kappale, jossa kerrot, että teksti ei ole
-sijoitusneuvoja vaan viihteellistä, yleisluonteista pohdintaa.</p>
-
-Lisäksi loppuun yksi lyhyt kappale, jossa kerrot, että teksti on
-tekoälyn kokeellisesti tuottamaa sisältöä ilman ihmisen editointia.
+<h2>Toinen näkökulma</h2>
+<p>Syvennä tai laajenna aihetta uudesta kulmasta.</p>
 """
-        return call_openai(system_prompt, user_prompt)
-
-    # 3) RUOKA – pysyy ruoka-aiheisena
-    if kind == "ruoka":
-        system_prompt = (
-            "Kirjoitat AISuomi-blogiin ruoka-aiheisen tekstin. "
-            "Voit käsitellä esimerkiksi ruokaa, ruuanlaittoa, "
-            "ruokakulttuuria ja arjen syömistä. Tyyli on rauhallinen."
+    elif kind == "villi":
+        topic_hint = (
+            "Saat kirjoittaa täysin vapaasti mistä tahansa aiheesta. "
+            "Voit kertoa tarinan, unenomaisen kuvauksen, mielikuvitusmatkan "
+            "tai jonkin kokonaan keksityn ilmiön. Sinun ei tarvitse olla "
+            "realistinen."
         )
-
-        user_prompt = """
-Kirjoita suomenkielinen ruoka-aiheinen blogiteksti.
-
-Aiheen tulee liittyä ruokaan, ruuanlaittoon, ruokakulttuuriin
-tai arjen syömiseen.
-
+        structure_instruction = """
 Käytä rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt ingressi, 1–3 virkettä ruokateemasta.</p>
+<p>Lyhyt ingressi, joka luo tunnelman tai herättää uteliaisuuden.</p>
 
-<h2>Ruokatarina tai teema</h2>
-<p>Kuvaile aihetta useamman kappaleen verran: arjen ruoka, sesongin
-raaka-aineet, yhdessä syöminen tai muu vastaava.</p>
+<h2>Maailma tai tilanne</h2>
+<p>Kuvaile maailma, tilanne tai asetelma, jossa tarina tai ajatus liikkuu.</p>
 
-<h2>Viikon ruokalista</h2>
-<p>Esittele viikon ruokalista arkipäiville ja viikonlopulle.</p>
-<ul>
-  <li>Päivä + ruokalaji + lyhyt kuvaus.</li>
-  <li>Toista, kunnes viikko on käsitelty.</li>
-</ul>
-
-<h2>Reseptipoimintoja</h2>
-<p>Valitse 1–3 ruokalajia listasta ja anna lyhyet reseptit
-(ainesosat ja valmistusohje tiiviisti).</p>
-
-Loppuun yksi lyhyt kappale, jossa kerrot, että teksti on
-tekoälyn kokeellisesti tuottamaa sisältöä ilman ihmiseditointia.
+<h2>Mitä tästä seuraa?</h2>
+<p>Jatka tarinaa, ajatusta tai outoa ilmiötä omalla vapaalla tyylilläsi.</p>
 """
-        return call_openai(system_prompt, user_prompt)
-
-    # 4) YHTEISKUNTA – neutraali, faktapainotteinen
-    if kind == "yhteiskunta":
-        system_prompt = (
-            "Kirjoitat AISuomi-blogiin neutraalin yhteiskunta-aiheisen tekstin. "
-            "Kuvailet ilmiötä tai järjestelmää (esim. koulu, terveydenhuolto, "
-            "liikenne, verotus, palvelut) yleisellä tasolla. "
-            "Vältät puoluepolitiikkaa ja vahvoja kannanottoja."
+    elif kind == "talous":
+        topic_hint = (
+            "Kirjoita taloudesta laajassa mielessä: se voi olla Suomen talous, "
+            "arkitalous, hintataso, työ, yrittäjyys, rahaan liittyvät ilmiöt "
+            "tai vaikkapa tulevaisuuden talousskenaariot. Saat valita aiheen "
+            "vapaasti talouden ympäriltä."
         )
-
-        user_prompt = """
-Kirjoita suomenkielinen yhteiskunta-aiheinen blogiteksti.
-
-Aiheen tulee liittyä johonkin Suomen yhteiskunnalliseen rakenteeseen,
-palveluun tai arjen järjestelmään (esim. koulutus, terveydenhuolto,
-liikenne, verotus, sosiaaliturva) neutraalilla otteella.
-
+        structure_instruction = """
 Käytä rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt ingressi, 1–3 virkettä yhteiskunnallisesta ilmiöstä.</p>
+<p>Lyhyt ingressi, joka kertoo mistä talousilmiöstä tai näkökulmasta on kyse.</p>
+
+<h2>Taustaa ja ilmiön kuvaus</h2>
+<p>Kuvaile ilmiötä tai aihetta useamman kappaleen verran.</p>
+
+<h2>Mitä tämä voi tarkoittaa arjessa?</h2>
+<p>Pohdi, miten ilmiö näkyy yksilöiden, perheiden tai yhteiskunnan tasolla.</p>
+
+<p>Loppuun lisää lyhyt kappale, jossa kerrot, että teksti on yleistä pohdintaa
+eikä henkilökohtaista sijoitus- tai talousneuvontaa.</p>
+"""
+    elif kind == "ruoka":
+        topic_hint = (
+            "Kirjoita ruoasta, ruuanlaitosta, ruokakulttuurista, juhla- tai "
+            "arkiruokailusta, resepteistä tai vaikkapa jonkin raaka-aineen "
+            "tarinasta. Saat valita aiheen vapaasti ruoan ympäriltä."
+        )
+        structure_instruction = """
+Käytä rakennetta:
+
+<h1>Otsikko</h1>
+<p>Lyhyt ingressi, joka kertoo mikä ruokaan liittyvä teema on käsittelyssä.</p>
+
+<h2>Tarina tai teema</h2>
+<p>Kuvaile ruokaan liittyvää tarinaa, kokemusta tai ilmiötä muutaman kappaleen verran.</p>
+
+<h2>Ideoita ja käytännön esimerkkejä</h2>
+<p>Anna esimerkkejä arjen ruuista, resepteistä, ideoista tai tavoista syödä rauhassa.</p>
+"""
+    elif kind == "yhteiskunta":
+        topic_hint = (
+            "Kirjoita yhteiskunnasta: arjen järjestelmistä, historiasta, "
+            "palveluista, koulusta, terveydenhuollosta, liikenteestä, "
+            "työelämästä, hallinnosta tai mistä tahansa tavallisen ihmisen "
+            "kokemaa yhteiskuntaa sivuavasta teemasta. Saat käsitellä myös "
+            "vaikeampia aiheita, mutta omaan rauhalliseen tyyliisi."
+        )
+        structure_instruction = """
+Käytä rakennetta:
+
+<h1>Otsikko</h1>
+<p>Lyhyt ingressi, joka johdattaa valitsemaasi yhteiskunnalliseen aiheeseen.</p>
 
 <h2>Mistä ilmiössä on kyse?</h2>
-<p>Kuvaile taustaa ja nykytilannetta neutraalisti useamman kappaleen verran.</p>
+<p>Kuvaile taustaa ja nykytilannetta useamman kappaleen verran.</p>
 
-<h2>Miten tämä näkyy arjessa?</h2>
-<p>Anna konkreettisia esimerkkejä ilman vahvaa puolesta–tai–vastaan-asettelua.</p>
-
-<p>Loppuun lisää lyhyt kappale, jossa muistutat, että teksti
-on yleisluonteinen kuvaus eikä ota kantaa puoluepolitiikkaan.</p>
-
-Lisäksi loppuun yksi lyhyt kappale, jossa kerrot, että teksti on
-tekoälyn kokeellisesti tuottamaa sisältöä ilman ihmisen editointia.
+<h2>Miten tämä osuu ihmisen arkeen?</h2>
+<p>Pohdi, miten ilmiö näkyy yksilön tai yhteisön tasolla, ja millaisia ajatuksia se voi herättää.</p>
 """
-        return call_openai(system_prompt, user_prompt)
-
-    # 5) TEEMA – runot / joulu / uusivuosi
-    if kind == "teema":
-        # Joulu / uusivuosi / muu
-        if TODAY.month == 12 and TODAY.day <= 25:
-            topic_instruction = (
-                "jouluisesta ja rauhallisesta tunnelmasta, talvisesta luonnosta "
-                "tai lempeästä joulunvietosta. Voit viitata myös kristilliseen "
-                "jouluperinteeseen (esim. hiljainen yö, tähdet, enkelit), "
-                "mutta ilman voimakasta julistusta."
+    elif kind == "teema":
+        # Teemablogi: joulun aika, uusivuosi tai muu ajankohtainen / vapaa runoteema
+        today = TODAY
+        if today.month == 12 and today.day <= 25:
+            topic_hint = (
+                "Kirjoita joulun ajan tai talvisen kauden tunnelmasta. "
+                "Voit käyttää perinteisiä joulun kuvia, mutta tulkinta on vapaa."
             )
-        elif (TODAY.month == 12 and TODAY.day > 25) or (TODAY.month == 1 and TODAY.day == 1):
-            topic_instruction = (
-                "uuden vuoden tunnelmasta, toiveikkuudesta, rauhallisesta "
-                "vuodenvaihteesta ja pienistä päätöksistä. Vältä päihteitä ja "
-                "rajuja ilotulitekuvauksia, keskity valoon, hiljaisuuteen ja toivoon."
+        elif (today.month == 12 and today.day > 25) or (today.month == 1 and today.day == 1):
+            topic_hint = (
+                "Kirjoita vuodenvaihteesta, uuden vuoden alusta, toiveista, "
+                "muutoksesta tai hiljaisesta siirtymästä vanhasta uuteen."
             )
         else:
-            topic_instruction = (
-                "lyhyestä runosta tai laulunomaisesta tekstistä, joka liittyy "
-                "vuodenaikaan, luontoon, arkeen tai ystävällisyyteen. "
-                "Teksti saa olla leikittelevä, mutta rauhallinen ja kaikenikäisille sopiva."
+            topic_hint = (
+                "Kirjoita runo tai laulunomainen teksti jostakin ajankohtaisesta "
+                "tai sinua inspiroivasta teemasta: vuodenajoista, ihmisistä, "
+                "luonnosta, liikkeestä, hiljaisuudesta tai mistä tahansa."
             )
-
-        system_prompt = (
-            "Kirjoitat AISuomi-blogiin teemallisen runon tai laulunomaisen tekstin. "
-            "Tyyli on rauhallinen, selkeä ja luettavissa kaikenikäisille."
-        )
-
-        user_prompt = f"""
-Kirjoita suomenkielinen runo- tai laulunomainen teksti.
-
-Aiheen tulee olla {topic_instruction}
-
-Käytä rakennetta:
+        structure_instruction = """
+Kirjoita runomuotoinen tai laulunomainen teksti käyttäen HTML-rakennetta:
 
 <h1>Otsikko</h1>
-<p>Lyhyt johdanto, 1–3 virkettä.</p>
+<p>Lyhyt johdanto, 1–3 virkettä, joka virittää tunnelman.</p>
 
 <h2>Runo</h2>
-<p>Kirjoita runo niin, että jokainen säe tai pari säettä on omassa rivissään
-(esimerkiksi <br>-tagien avulla) tai omissa kappaleissaan.</p>
-
-Loppuun lisää yksi lyhyt kappale, jossa kerrot, että teksti on
-tekoälyn kokeellisesti tuottamaa sisältöä ilman ihmiseditointia.
+<p>Kirjoita runo niin, että säkeet erotellaan <br>-tägeillä tai kappaleilla.</p>
 """
-        return call_openai(system_prompt, user_prompt)
-
-    # 6) VARA – jos kind on jokin odottamaton
-    system_prompt = (
-        "Kirjoitat suomenkielisen blogitekstin AISuomi-sivustolle. "
-        "Tyyli on suomalainen: rauhallinen ja suora."
-    )
-    user_prompt = """
-Kirjoita suomenkielinen blogiteksti vapaasti valitsemastasi aiheesta.
-
-Käytä rakennetta:
-
+    else:
+        # Fallback, jos tulevaisuudessa lisätään jokin uusi kind
+        topic_hint = (
+            "Saat valita aiheen vapaasti ja kirjoittaa siitä blogitekstin "
+            "suomeksi. Voit käsitellä arkea, tunteita, historiaa, tarinoita, "
+            "yhteiskuntaa, taloutta, luontoa tai mitä tahansa muuta aihetta."
+        )
+        structure_instruction = """
 <h1>Otsikko</h1>
 <p>Lyhyt ingressi.</p>
 
-<h2>Alaotsikko</h2>
-<p>Leipätekstiä useammassa kappaleessa.</p>
+<h2>Ensimmäinen osa</h2>
+<p>Useampi kappale, joissa avaat aihetta.</p>
 
-<h2>Toinen alaotsikko</h2>
-<p>Lisää pohdintaa aiheesta.</p>
-
-Loppuun lyhyt kappale, jossa kerrot että teksti on tekoälyn
-kokeellisesti tuottamaa sisältöä ilman ihmiseditointia.
+<h2>Toinen osa</h2>
+<p>Jatka tai syvennä aihetta omalla tavallasi.</p>
 """
+
+    user_prompt = f"""
+Kirjoita suomenkielinen blogiteksti AISuomi-sivustolle.
+
+Saat valita aiheen vapaasti. {topic_hint}
+
+Tekstin kategoria on: {kind}. Voit tulkita tämän väljästi omalla tavallasi.
+
+{structure_instruction}
+
+Loppuun lisää yksi lyhyt kappale, jossa mainitset, että teksti on
+tekoälyn kokeellisesti tuottamaa sisältöä ilman ihmiseditointia.
+"""
+
     return call_openai(system_prompt, user_prompt)
+
+
+def extract_title(html_body: str, kind: str) -> str:
+    """
+    Otsikko haetaan ensisijaisesti <h1>-tagista.
+    Jos sitä ei löydy, käytetään varatittelettä.
+    """
+    title = f"AISuomi – {kind} {TODAY.isoformat()}"
+    start = html_body.find("<h1>")
+    end = html_body.find("</h1>")
+    if start != -1 and end != -1:
+        candidate = html_body[start + 4 : end].strip().replace("\n", " ")
+        if candidate:
+            title = candidate
+    return title
+
+
+def write_post(path: Path, kind: str, html_body: str) -> str:
+    # Otsikko <h1>:stä tai varatitteli
+    title = extract_title(html_body, kind)
+
+    # Absoluuttinen URL jakoa varten (FB / X / WhatsApp)
+    relative = path.relative_to(ROOT)
+    post_url = f"https://aisuomi.blog/{relative.as_posix()}"
+
+    # Yritetään hakea mahdollinen kuvituskuva tälle kategorialle
+    image_src = None    # type: ignore
+    try:
+        image_src = get_category_image_for_current_week(kind)
+    except Exception as e:
+        print(f"Ei voitu hakea kuvituskuvaa kategorialle {kind}: {e}")
+
+    # Haetaan suositellut jutut (sisäinen “AI-suositus”)
+    related_links = get_related_posts(kind, path, max_items=2)
+
+    # Rakennetaan mahdollinen kuvablokki
+    if image_src:
+        hero_html = f"""
+        <figure class="post-hero">
+          <img src="{image_src}" alt="{title} – kuvituskuva">
+          <figcaption class="muted">
+            Kuvituskuva: autonomisesti luotu AI-kuva.
+          </figcaption>
+        </figure>
+        """
+    else:
+        hero_html = ""
+
+    # Rakennetaan suositellut jutut -kortti
+    if related_links:
+        items_html = "\n".join(
+            f'<li><a href="{href}">{rtitle}</a></li>' for href, rtitle in related_links
+        )
+        related_html = f"""
+        <div class="card">
+          <h2>Suositellut jutut</h2>
+          <p class="muted">Muita AISuomi-tekstejä samasta aihepiiristä.</p>
+          <ul>
+            {items_html}
+          </ul>
+        </div>
+        """
+    else:
+        related_html = ""
+
+    document = f"""<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="utf-8">
+    <title>{title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <h1>{title}</h1>
+      <p class="tagline">Autonominen AISuomi-blogikirjoitus ({kind}).</p>
+    </header>
+
+    <nav class="top-nav">
+      <a href="/index.html">Etusivu</a>
+      <a href="/talous.html">Talous</a>
+      <a href="/ruoka.html">Ruoka</a>
+      <a href="/yhteiskunta.html">Yhteiskunta</a>
+      <a href="/teema.html">Teema</a>
+      <a href="/uutisiasuomesta.html">Uutisia Suomesta</a>
+      <a href="/privacy.html">Tietosuoja</a>
+      <a href="/cookies.html">Evästeet</a>
+    </nav>
+
+    <main class="layout">
+      <section class="main-column">
+        {hero_html}
+        {html_body}
+
+        <div class="card">
+          <h2>Jaa tämä juttu</h2>
+          <p class="muted">
+            Voit halutessasi jakaa AISuomi-jutun eteenpäin.
+          </p>
+          <p class="share-links">
+            <a href="https://www.facebook.com/sharer/sharer.php?u={post_url}"
+               target="_blank" rel="noopener">
+              Jaa Facebookissa
+            </a><br>
+            <a href="https://twitter.com/intent/tweet?url={post_url}"
+               target="_blank" rel="noopener">
+              Jaa X:ssä
+            </a><br>
+            <a href="https://api.whatsapp.com/send?text={post_url}"
+               target="_blank" rel="noopener">
+              Jaa WhatsAppissa
+            </a>
+          </p>
+        </div>
+
+        {related_html}
+      </section>
+      <aside class="sidebar">
+        <div class="card">
+          <h2>Huomio</h2>
+          <p class="muted">
+            Teksti on tekoälyn tuottamaa sisältöä. Ihminen ei ole
+            editoinut sitä ennen julkaisua.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Tue AISuomi-projektia</h3>
+          <p>
+            Tämä blogi toimii täysin autonomisesti tekoälyn ohjaamana.
+            Jos haluat tukea projektin jatkokehitystä, voit tehdä pienen
+            vapaaehtoisen lahjoituksen.
+          </p>
+          <p style="text-align:center; margin-top:0.5rem;">
+            <a href="https://buymeacoffee.com/aisuomi" target="_blank" rel="noopener"
+               style="text-decoration:none; font-weight:600;">
+              → Siirry tukisivulle
+            </a>
+          </p>
+          <p class="muted">
+            Tukeminen on vapaaehtoista eikä vaikuta sisältöön.
+          </p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      AISuomi – autonominen AI-blogi.
+      | <a href="/index.html">Etusivu</a>
+      | <a href="/talous.html">Talous</a>
+      | <a href="/ruoka.html">Ruoka</a>
+      | <a href="/yhteiskunta.html">Yhteiskunta</a>
+      | <a href="/teema.html">Teema</a>
+      | <a href="/privacy.html">Tietosuoja</a>
+      | <a href="/cookies.html">Evästeet</a>
+      | <a href="/contact.html">Yhteys</a>
+    </footer>
+  </body>
+</html>
+"""
+    path.write_text(dedent(document), encoding="utf-8")
+    return title
+
+
+def get_last_post_date(dir_path: Path, kind: str):
+    """
+    Palauttaa viimeisimmän päivämäärän (date) annetusta hakemistosta,
+    jossa tiedostonimi on muotoa YYYY-MM-DD-kind.html.
+    """
+    dates = []
+    for p in dir_path.glob(f"*-{kind}.html"):
+        name = p.name
+        try:
+            d = datetime.strptime(name[:10], "%Y-%m-%d").date()
+            dates.append(d)
+        except ValueError:
+            continue
+
+    if not dates:
+        return None
+    return max(dates)
+
+
+def get_week_key(d: date) -> str:
+    iso_year, iso_week, _ = d.isocalendar()
+    return f"{iso_year}-W{iso_week:02d}"
+
+
+def ensure_category_image(kind: str, week_key: str) -> str:
+    """
+    Varmistaa, että kategoria-kindille on olemassa kuvituskuva tälle viikolle.
+    Palauttaa kuvan polun /assets/images/... -muodossa (URL:ia varten).
+    Luo kuvan kerran viikossa per kategoria OpenAI-kuvamallilla.
+    """
+    if kind not in IMAGE_CATEGORIES:
+        return ""
+
+    cat_dir = IMAGES_DIR / kind
+    cat_dir.mkdir(parents=True, exist_ok=True)
+
+    filename = f"{week_key}-{kind}.png"
+    img_path = cat_dir / filename
+
+    if img_path.exists():
+        # Kuva on jo luotu aiemmin tällä viikolla
+        return f"/assets/images/{kind}/{filename}"
+
+    # Jos kuvaa ei ole, luodaan se OpenAI-kuvamallilla
+    prompt_map = {
+        "talous": (
+            "rauhallinen, abstrakti kuvitus suomalaisesta taloudesta, "
+            "pehmeät siniset ja vihreät sävyt, moderni mutta hillitty tyyli"
+        ),
+        "ruoka": (
+            "valoisa, lämmin kuvitus suomalaisesta kotiruuasta ja "
+            "sesongin raaka-aineista, pehmeä ja ystävällinen tyyli"
+        ),
+        "yhteiskunta": (
+            "neutraali kuvitus suomalaisesta yhteiskunnasta: koulu, "
+            "terveydenhuolto, kirjasto, ilman politiikkaa tai logoja"
+        ),
+        "teema": (
+            "tunnelmallinen, vuodenaikaan sopiva kuvitus, kuten talvinen "
+            "metsä tai hiljainen kaupunkimaisema, rauhallinen tyyli"
+        ),
+        "identiteetti": (
+            "kuvitus suomalaisesta luonnosta ja kulttuurista, järvi, "
+            "metsä ja valoisa taivas, rauhallinen ja mietiskelevä"
+        ),
+        "villi": (
+            "mielikuvituksellinen, lempeän outo kuvitus, jossa on "
+            "luontoa, valoa ja hieman satumainen tunnelma"
+        ),
+    }
+
+    prompt = prompt_map.get(
+        kind,
+        "rauhallinen ja neutraali kuvitus suomalaisesta luonnosta ja arjesta"
+    )
+
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "model": "gpt-image-1",
+        "prompt": prompt,
+        "size": "1024x1024",
+        "n": 1,
+        "response_format": "b64_json",
+    }
+
+    resp = requests.post(
+        "https://api.openai.com/v1/images",
+        headers=headers,
+        json=payload,
+        timeout=120,
+    )
+    if resp.status_code != 200:
+        raise RuntimeError(f"OpenAI Images API error: {resp.status_code} {resp.text}")
+
+    data = resp.json()
+    img_b64 = data["data"][0]["b64_json"]
+    img_bytes = base64.b64decode(img_b64)
+    img_path.write_bytes(img_bytes)
+
+    return f"/assets/images/{kind}/{filename}"
+
+
+def get_category_image_for_current_week(kind: str) -> str:
+    """
+    Julkinen apufunktio write_post:ille: yksi kuva/viikko/kategoria.
+    """
+    week_key = get_week_key(TODAY)
+    return ensure_category_image(kind, week_key)
 
 
 def _extract_title_from_document(doc_html: str) -> str:
@@ -362,6 +575,7 @@ def get_related_posts(kind: str, current_path: Path, max_items: int = 2) -> list
 
     return out
 
+
 def update_index_file(index_path: Path, new_links: list[tuple[str, str]]):
     """
     Lisää uudet linkit annetun indeksisivun <ul class="post-list"> -listaan.
@@ -382,6 +596,7 @@ def update_index_file(index_path: Path, new_links: list[tuple[str, str]]):
         new_html = html[:insert_at] + middle + html[insert_at:]
         index_path.write_text(new_html, encoding="utf-8")
 
+
 def build_rss_feed(base_url: str = "https://aisuomi.blog"):
     """
     Rakentaa yksinkertaisen RSS 2.0 -syötteen kaikista posteista ja
@@ -391,25 +606,25 @@ def build_rss_feed(base_url: str = "https://aisuomi.blog"):
 
     entries: list[tuple[datetime, str, str]] = []
 
-    # Kerää kaikki postit: posts/*.html ja posts/**/**/*.html
-    # (sekä juuren postit että alikansiot talous/ruoka/yhteiskunta/teema)
+    # Kerää kaikki postit
     for p in POSTS_DIR.glob("*.html"):
-        entries.append(_collect_rss_entry(p, base_url))
+        e = _collect_rss_entry(p, base_url)
+        if e:
+            entries.append(e)
     for sub in ("talous", "ruoka", "yhteiskunta", "teema"):
         subdir = POSTS_DIR / sub
         if subdir.exists():
             for p in subdir.glob("*.html"):
-                entries.append(_collect_rss_entry(p, base_url))
-
-    # Suodata pois epäonnistuneet (None) ja lajittele uusimmat ensin
-    entries = [e for e in entries if e is not None]  # type: ignore
-    entries.sort(key=lambda x: x[0], reverse=True)
-
-    # Rajaa esim. 50 uusimpaan
-    entries = entries[:50]
+                e = _collect_rss_entry(p, base_url)
+                if e:
+                    entries.append(e)
 
     if not entries:
         return
+
+    # Uusimmat ensin
+    entries.sort(key=lambda x: x[0], reverse=True)
+    entries = entries[:50]
 
     last_build = entries[0][0].strftime("%a, %d %b %Y %H:%M:%S +0000")
 
@@ -442,8 +657,7 @@ def build_rss_feed(base_url: str = "https://aisuomi.blog"):
 
 def _collect_rss_entry(path: Path, base_url: str):
     """
-    Palauttaa (päivämäärä, linkki, otsikko) tai None, jos tiedosto ei
-    sovi RSS-syötteeseen.
+    Palauttaa (päivämäärä, linkki, otsikko) tai None.
     """
     name = path.name
     try:
@@ -451,7 +665,6 @@ def _collect_rss_entry(path: Path, base_url: str):
     except ValueError:
         return None
 
-    # Lue otsikko <title>-tagista
     html = path.read_text(encoding="utf-8")
     start = html.find("<title>")
     end = html.find("</title>")
@@ -462,6 +675,8 @@ def _collect_rss_entry(path: Path, base_url: str):
     rel = path.relative_to(ROOT)
     link = f"{base_url}/{rel.as_posix()}"
     return d, link, title
+
+
 def build_sitemap(base_url: str = "https://aisuomi.blog"):
     """
     Rakentaa yksinkertaisen sitemap.xml-tiedoston, joka sisältää
@@ -480,6 +695,7 @@ def build_sitemap(base_url: str = "https://aisuomi.blog"):
         "teema.html",
         "privacy.html",
         "cookies.html",
+        "uutisiasuomesta.html",
     ]
 
     for name in root_files:
@@ -509,7 +725,7 @@ def build_sitemap(base_url: str = "https://aisuomi.blog"):
 
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ]
     for loc in unique_urls:
         lines.append(f"  <url><loc>{loc}</loc></url>")
@@ -635,7 +851,6 @@ def main():
         build_sitemap()
     except Exception as e:
         print(f"RSS/sitemap päivitys epäonnistui: {e}")
-
 
 
 if __name__ == "__main__":
