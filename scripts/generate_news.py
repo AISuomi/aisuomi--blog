@@ -6,10 +6,7 @@ import html
 import feedparser  # asennettu workflowissa
 
 
-# Projektin juuripolku
 ROOT = Path(__file__).resolve().parents[1]
-
-# Data-hakemisto uutishistorialle
 DATA_DIR = ROOT / "data"
 DATA_DIR.mkdir(exist_ok=True)
 
@@ -17,73 +14,18 @@ NEWS_HISTORY_PATH = DATA_DIR / "news_history.json"
 NEWS_INDEX_PAGE = ROOT / "uutisiasuomesta.html"
 
 # ---------------------------------------------------------------------------
-# AVAINSANAT: MITÄ ETSITÄÄN OTSIKOISTA / TIIVISTELMISTÄ
-# ---------------------------------------------------------------------------
-
-KEYWORDS = [
-    # Suomi yleisesti
-  "finland",
-    "finnish",
-    "finns",
-    "suomi",
-    "suomalainen",
-    "suomalaiset",
-
-    # Paikat
-
-    "helsinki",
-    "lapland",
-    "lappi",
-    "kurejoki",
-    "alajärvi",
-    "alajarvi",
-    "etelä-pohjanmaa",
-    "etelapohjanmaa",
-    "south ostrobothnia",
-]
-
-# ---------------------------------------------------------------------------
-# RSS-LÄHTEET – VAIN ULKOMAISET MEDIAT
-# (on tarkoituksella rajattu lähteisiin, jotka ovat tyypillisesti
-#  hyvin muodostettua RSS:ää / RDF:ää, eivätkä aiheuta XML-virheitä)
+# Lähdelista: ulkomaiset uutismediat, jotka voivat mainita Suomen
+# (voit lisätä tänne myöhemmin uusia helposti)
 # ---------------------------------------------------------------------------
 
 SOURCES = [
-    # EUROOPPA
+    # Yle poistettu – idea on seurata, mitä MUU maailma Suomesta kirjoittaa
+
+    # Kansainväliset isot englanninkieliset
     {
-        "name": "DW World",
+        "name": "Reuters World News",
         "lang": "en",
-        "url": "https://rss.dw.com/rdf/rss-en-world",
-    },
-        {
-        "name": "Le Monde (FR)",
-        "lang": "fr",
-        "url": "https://www.lemonde.fr/rss/une.xml",
-    },
-    {
-        "name": "El País (ES)",
-        "lang": "es",
-        "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/internacional",
-    },
-    {
-        "name": "Der Spiegel (DE)",
-        "lang": "de",
-        "url": "https://www.spiegel.de/international/index.rss",
-    },
-    {
-        "name": "DW Europe",
-        "lang": "en",
-        "url": "https://rss.dw.com/rdf/rss-en-europe",
-    },
-    {
-        "name": "Euronews World",
-        "lang": "en",
-        "url": "https://www.euronews.com/rss?level=theme&name=news",
-    },
-    {
-        "name": "Euronews Europe",
-        "lang": "en",
-        "url": "https://www.euronews.com/rss?level=theme&name=europe",
+        "url": "https://feeds.reuters.com/reuters/worldNews",
     },
     {
         "name": "BBC World",
@@ -96,19 +38,52 @@ SOURCES = [
         "url": "http://feeds.bbci.co.uk/news/world/europe/rss.xml",
     },
     {
+        "name": "The Guardian World",
+        "lang": "en",
+        "url": "https://www.theguardian.com/world/rss",
+    },
+    {
+        "name": "The Guardian Europe",
+        "lang": "en",
+        "url": "https://www.theguardian.com/world/europe-news/rss",
+    },
+    {
+        "name": "DW News (DE→EN feed)",
+        "lang": "en",
+        "url": "https://rss.dw.com/rdf/rss-en-all",
+    },
+    {
+        "name": "Euronews",
+        "lang": "en",
+        "url": "https://www.euronews.com/rss?level=theme&name=news",
+    },
+    {
         "name": "Politico Europe",
         "lang": "en",
         "url": "https://www.politico.eu/feed/",
+    },
+    {
+        "name": "France24 World (EN)",
+        "lang": "en",
+        "url": "https://www.france24.com/en/rss",
     },
     {
         "name": "EUobserver",
         "lang": "en",
         "url": "https://euobserver.com/rss",
     },
-
-    # POHJOIS-AMERIKKA
     {
-        "name": "NYT World",
+        "name": "CNN World",
+        "lang": "en",
+        "url": "http://rss.cnn.com/rss/edition_world.rss",
+    },
+    {
+        "name": "CNN Europe",
+        "lang": "en",
+        "url": "http://rss.cnn.com/rss/edition_europe.rss",
+    },
+    {
+        "name": "New York Times World",
         "lang": "en",
         "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
     },
@@ -118,68 +93,131 @@ SOURCES = [
         "url": "http://feeds.washingtonpost.com/rss/world",
     },
 
-    # AASIA / OSEANIA
+    # Pohjoismaat, Eurooppa (kansalliskieliä)
     {
-        "name": "Japan Times",
-        "lang": "en",
-        "url": "https://www.japantimes.co.jp/feed/",
+        "name": "SVT Nyheter (SE)",
+        "lang": "sv",
+        "url": "https://www.svt.se/nyheter/rss.xml",
     },
     {
-        "name": "SCMP World",
-        "lang": "en",
-        "url": "https://www.scmp.com/rss/91/feed",
+        "name": "NRK Nyheter (NO)",
+        "lang": "no",
+        "url": "https://www.nrk.no/toppsaker.rss",
     },
+    {
+        "name": "DR Nyheder (DK)",
+        "lang": "da",
+        "url": "https://www.dr.dk/nyheder/service/feeds/allenyheder",
+    },
+    {
+        "name": "NOS Nieuws (NL)",
+        "lang": "nl",
+        "url": "https://feeds.nos.nl/nosnieuwsalgemeen",
+    },
+
+    # Ranska, Saksa, Espanja – pyytämäsi
+    {
+        "name": "Le Monde (FR)",
+        "lang": "fr",
+        "url": "https://www.lemonde.fr/rss/une.xml",
+    },
+    {
+        "name": "El País Internacional (ES)",
+        "lang": "es",
+        "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/internacional",
+    },
+    {
+        "name": "Der Spiegel International Section (DE→EN)",
+        "lang": "en",
+        "url": "https://www.spiegel.de/international/index.rss",
+    },
+
+    # Italia, Portugali
+    {
+        "name": "La Repubblica Mondo (IT)",
+        "lang": "it",
+        "url": "https://www.repubblica.it/rss/mondo/rss2.0.xml",
+    },
+    {
+        "name": "Público Mundo (PT)",
+        "lang": "pt",
+        "url": "https://www.publico.pt/rss/mundo",
+    },
+
+    # Kanada, Australia
     {
         "name": "ABC Australia World",
         "lang": "en",
         "url": "https://www.abc.net.au/news/feed/51120/rss.xml",
     },
 
-    # LÄHI-ITÄ
+    # Aasia
+    {
+        "name": "Japan Times",
+        "lang": "en",
+        "url": "https://www.japantimes.co.jp/feed/",
+    },
+    # Etelä-Korea, Intia jne. voidaan lisätä myöhemmin
+
+    # Kiinan suunnalta neutraalein: Hongkongin SCMP
+    {
+        "name": "South China Morning Post (HK, EN)",
+        "lang": "en",
+        "url": "https://www.scmp.com/rss/91/feed",
+    },
+
+    # Lähi-itä & Afrikka
     {
         "name": "Al Jazeera – All News",
         "lang": "en",
         "url": "https://www.aljazeera.com/xml/rss/all.xml",
     },
-
-    # ETELÄ-AMERIKKA
     {
-        "name": "MercoPress",
+        "name": "MercoPress (South Atlantic / LatAm)",
         "lang": "en",
         "url": "https://en.mercopress.com/rss",
     },
 ]
 
-# --- Hakusanat: mikä lasketaan Suomi-aiheiseksi ---------------------------
+# ---------------------------------------------------------------------------
+# Hakusanat: mikä tulkitaan Suomi-aiheiseksi?
+# ---------------------------------------------------------------------------
 
+# Maatason sanat: “Suomi” eri kielillä
 KEYWORDS_COUNTRY = [
     "finland",
     "finnish",
     "suomi",
+    "finlande",    # ranska
+    "finlandia",   # espanja, italia, puola ym.
+    "finnland",    # saksa
+    "finlândia",   # portugali
+    "finlandiya",  # turkki ym.
+    "финляндия",   # venäjä
+    "芬兰",        # kiina
 ]
 
+# Paikalliset / alueelliset sanat
 KEYWORDS_LOCAL = [
     "kurejoki",
     "alajärvi",
-    "etelä-pohjanmaa",
     "eteläpohjanmaa",
+    "etelä-pohjanmaa",
     "lappi",
     "lapland",
     "saame",
+    "helsinki",  # usein merkki Suomesta, vaikka sana “Finland” ei olisi mukana
 ]
 
 ALL_KEYWORDS = KEYWORDS_COUNTRY + KEYWORDS_LOCAL
 
-# ---------------------------------------------------------------------------
-# HISTORIA-TIEDOSTO
-# ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Historia-tiedosto
+# ---------------------------------------------------------------------------
 
 def load_history() -> dict:
-    """
-    Lataa news_history.json ja normalisoi sen muotoon {'items': [...]}.
-    Vanha formaatti (pelkkä lista) kääritään dictin sisään.
-    """
+    """Lataa news_history.json ja normalisoi muotoon {'items': [...]}."""
     if not NEWS_HISTORY_PATH.exists():
         return {"items": []}
 
@@ -187,10 +225,10 @@ def load_history() -> dict:
         with NEWS_HISTORY_PATH.open("r", encoding="utf-8") as f:
             data = json.load(f)
     except Exception:
-        # Jos tiedosto on rikki → aloita alusta
+        # Jos tiedosto on rikki → aloita puhtaalta pöydältä
         return {"items": []}
 
-    # Jos sisältö on lista, kääritään se dictin sisään
+    # Vanha formaatti: lista → kääri dictin sisään
     if isinstance(data, list):
         return {"items": data}
 
@@ -200,7 +238,6 @@ def load_history() -> dict:
     items = data.get("items")
     if not isinstance(items, list):
         data["items"] = []
-
     return data
 
 
@@ -210,10 +247,7 @@ def save_history(history: dict) -> None:
 
 
 def iso_date_from_entry(entry) -> str:
-    """
-    Palauttaa päivämäärän muodossa YYYY-MM-DD.
-    Yrittää käyttää published_parsed / updated_parsed -kenttiä.
-    """
+    """Palauta YYYY-MM-DD, käytetään published/updated -ajasta tai tämän päivän päivää."""
     for attr in ("published_parsed", "updated_parsed"):
         t = getattr(entry, attr, None)
         if t:
@@ -225,9 +259,8 @@ def iso_date_from_entry(entry) -> str:
 
 
 # ---------------------------------------------------------------------------
-# UUTISTEN KERUU
+# Uutisten keruu
 # ---------------------------------------------------------------------------
-
 
 def collect_news() -> dict:
     history = load_history()
@@ -238,17 +271,22 @@ def collect_news() -> dict:
         if isinstance(item, dict) and item.get("link")
     }
 
-    new_items = []
+    new_items: list[dict] = []
 
     for src in SOURCES:
-        feed = feedparser.parse(src["url"])
-
         print(f"Haetaan uutisia lähteestä: {src['name']} ({src['url']})")
 
-        # Feed voi olla virheellinen
+        try:
+            feed = feedparser.parse(src["url"])
+        except Exception as e:
+            print(f"VAROITUS: Lähteen '{src['name']}' haku epäonnistui: {e}")
+            continue
+
         if feed.bozo:
-            print(f"VAROITUS: Lähteen '{src['name']}' syöte tyhjä tai virheellinen "
-                  f"(bozo={feed.bozo}, exc={feed.bozo_exception})")
+            print(
+                f"VAROITUS: Lähteen '{src['name']}' syöte voi olla ongelmallinen "
+                f"(bozo={feed.bozo}, exc={feed.bozo_exception})"
+            )
 
         for entry in feed.entries:
             title = getattr(entry, "title", "").strip()
@@ -281,16 +319,15 @@ def collect_news() -> dict:
     if new_items:
         history["items"].extend(new_items)
         history["items"].sort(key=lambda x: x.get("published", ""), reverse=True)
-        history["items"] = history["items"][:2000]  # kasvatin historian max-kokoa
+        # pidetään historia maltillisena
+        history["items"] = history["items"][:2000]
 
     return history
 
 
-
 # ---------------------------------------------------------------------------
-# HTML-RAKENTAMINEN
+# HTML-pätkien rakentaminen
 # ---------------------------------------------------------------------------
-
 
 def build_recent_html(history: dict) -> str:
     """Uusimmat 7 päivän uutiset <li>-elementteinä.
@@ -300,11 +337,10 @@ def build_recent_html(history: dict) -> str:
     - 'muut' = sisältää vain paikallisia sanoja (KEYWORDS_LOCAL),
       mutta ei KEYWORDS_COUNTRY-sanoja.
     """
-
     cutoff = datetime.utcnow().date() - timedelta(days=7)
 
-    primary_rows = []   # keskeiset Suomi-maininnat
-    other_rows = []     # muut paikalliset/alueelliset maininnat
+    primary_rows: list[str] = []   # keskeiset Suomi-maininnat
+    other_rows: list[str] = []     # muut paikalliset/alueelliset maininnat
 
     for item in history["items"]:
         try:
@@ -325,7 +361,6 @@ def build_recent_html(history: dict) -> str:
         source = html.escape(source_raw)
         lang = html.escape(lang_raw)
 
-        # Luokitellaan kahteen ryhmään tekstin sisältöjen perusteella
         text_lower = f"{title_raw} {source_raw}".lower()
 
         has_country = any(kw in text_lower for kw in KEYWORDS_COUNTRY)
@@ -341,14 +376,12 @@ def build_recent_html(history: dict) -> str:
         elif has_local:
             other_rows.append(line)
         else:
-            # Varmuuden vuoksi: jos tähän päädytään, työnnetään "muut"-ryhmään
+            # varalta, jos ALL_KEYWORDS-match tuli vain summaryssa
             other_rows.append(line)
 
-    # Jos ei mitään uutta 7 päivän ajalta
     if not primary_rows and not other_rows:
         return '  <li class="muted">Ei Suomiaiheisia uutisia viimeisen 7 päivän ajalta.</li>'
 
-    # Rakennetaan yksi lista, jossa ensin keskeiset, sitten muut
     rows: list[str] = []
 
     if primary_rows:
@@ -356,7 +389,6 @@ def build_recent_html(history: dict) -> str:
         rows.extend(primary_rows)
 
     if other_rows:
-        # Erotin, jos molempia on
         if primary_rows:
             rows.append('  <li class="section-title"><strong>Muut Suomi-aiheiset maininnat</strong></li>')
         else:
@@ -365,42 +397,10 @@ def build_recent_html(history: dict) -> str:
 
     return "\n".join(rows)
 
-    cutoff = datetime.utcnow().date() - timedelta(days=7)
-    rows = []
-
-    for item in history["items"]:
-        try:
-            d = datetime.strptime(item.get("published", "1970-01-01"), "%Y-%m-%d").date()
-        except Exception:
-            continue
-
-        if d < cutoff:
-            continue
-
-        title = html.escape(item.get("title", "").strip())
-        link = html.escape(item.get("link", "").strip())
-        source = html.escape(item.get("source", ""))
-        lang = html.escape(item.get("lang", "").upper())
-        date = html.escape(item.get("published", ""))
-
-        rows.append(
-            f'  <li><a href="{link}" target="_blank" rel="noopener">'
-            f"{date}: {title} – {source} ({lang})</a></li>"
-        )
-
-    if not rows:
-        return '  <li class="muted">Ei Suomiaiheisia uutisia viimeisen 7 päivän ajalta.</li>'
-
-    return "\n".join(rows)
-
 
 def build_archive_pages_and_index_list(history: dict) -> str:
-    """
-    Luo uutisiasuomesta-YYYY.html -sivut ja palauttaa
-    index-sivulle tulevan arkistolistan <li>-elementit.
-    """
+    """Luo uutisiasuomesta-YYYY.html -sivut ja palauttaa index-sivun arkistolistan."""
 
-    # Ryhmitellään vuoden mukaan
     by_year: dict[str, list[dict]] = {}
     for item in history["items"]:
         published = item.get("published", "")
@@ -409,19 +409,20 @@ def build_archive_pages_and_index_list(history: dict) -> str:
         year = published[:4]
         by_year.setdefault(year, []).append(item)
 
-    index_items = []
+    index_items: list[str] = []
 
     for year, items in sorted(by_year.items(), reverse=True):
         page_name = f"uutisiasuomesta-{year}.html"
         page_path = ROOT / page_name
 
-        li_rows = []
+        li_rows: list[str] = []
         for it in items:
             title = html.escape(it.get("title", "").strip())
             link = html.escape(it.get("link", "").strip())
             source = html.escape(it.get("source", ""))
             lang = html.escape(it.get("lang", "").upper())
             date = html.escape(it.get("published", ""))
+
             li_rows.append(
                 f'        <li><a href="{link}" target="_blank" rel="noopener">'
                 f"{date}: {title} – {source} ({lang})</a></li>"
@@ -444,7 +445,7 @@ def build_archive_pages_and_index_list(history: dict) -> str:
     <header class="site-header">
       <h1>Uutisia Suomesta – {year}</h1>
       <p class="tagline">
-        Vuoden {year} aikana ulkomaisissa medioissa julkaistuja uutisia, joissa mainitaan Suomi, Finland tai suomalaiset.
+        Vuoden {year} aikana eri kielissä julkaistuja uutisia, joissa mainitaan Suomi tai suomalaiset.
       </p>
     </header>
 
@@ -498,16 +499,8 @@ def build_archive_pages_and_index_list(history: dict) -> str:
     return "\n".join(index_items)
 
 
-# ---------------------------------------------------------------------------
-# INDEX-SIVUN PÄIVITYS
-# ---------------------------------------------------------------------------
-
-
 def patch_between_markers(html_text: str, start_marker: str, end_marker: str, new_block: str) -> str:
-    """
-    Korvaa kahden kommenttimerkin välin.
-    Jos markkereita ei löydy, palauttaa alkuperäisen tekstin.
-    """
+    """Korvaa kahden kommenttimerkin välin."""
     start = html_text.find(start_marker)
     end = html_text.find(end_marker)
     if start == -1 or end == -1 or end < start:
@@ -536,11 +529,6 @@ def update_index_page(history: dict) -> None:
     )
 
     NEWS_INDEX_PAGE.write_text(html_text, encoding="utf-8")
-
-
-# ---------------------------------------------------------------------------
-# MAIN
-# ---------------------------------------------------------------------------
 
 
 def main() -> None:
