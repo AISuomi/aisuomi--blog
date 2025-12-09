@@ -92,11 +92,7 @@ SOURCES = [
         "lang": "en",
         "url": "http://feeds.washingtonpost.com/rss/world",
     },
-    SOURCES += [
-    # ------------------------------------------------------------------
-    # Pohjois-Amerikka
-    # ------------------------------------------------------------------
-    {
+        {
         "name": "CBC World News (CA)",
         "lang": "en",
         "url": "https://www.cbc.ca/webfeed/rss/rss-world",
@@ -118,41 +114,6 @@ SOURCES = [
         "url": "https://www.latimes.com/world-nation/rss2.0.xml",
     },
 
-    # ------------------------------------------------------------------
-    # Eurooppa
-    # ------------------------------------------------------------------
-    {
-        "name": "RTÉ News (IE)",
-        "lang": "en",
-        "url": "https://www.rte.ie/feeds/rss/?index=/news/",
-    },
-    {
-        "name": "RTBF Info (BE)",
-        "lang": "fr",
-        "url": "https://rss.rtbf.be/article/rss/rtbfinfo_homepage.xml",
-    },
-
-    # ------------------------------------------------------------------
-    # Aasia / Tyynenmeren alue
-    # ------------------------------------------------------------------
-    {
-        "name": "The Straits Times World News (SG)",
-        "lang": "en",
-        "url": "https://www.straitstimes.com/news/world/rss.xml",
-    },
-    {
-        "name": "Yonhap News Agency (KR, EN)",
-        "lang": "en",
-        "url": "https://en.yna.co.kr/RSS/news.xml",
-    },
-    {
-        "name": "RNZ World Headlines (NZ)",
-        "lang": "en",
-        "url": "https://www.rnz.co.nz/rss/world",
-    },
-]
-
-
     # Pohjoismaat, Eurooppa (kansalliskieliä)
     {
         "name": "SVT Nyheter (SE)",
@@ -173,6 +134,16 @@ SOURCES = [
         "name": "NOS Nieuws (NL)",
         "lang": "nl",
         "url": "https://feeds.nos.nl/nosnieuwsalgemeen",
+    },
+    {
+        "name": "RTÉ News (IE)",
+        "lang": "en",
+        "url": "https://www.rte.ie/feeds/rss/?index=/news/",
+    },
+    {
+        "name": "RTBF Info (BE)",
+        "lang": "fr",
+        "url": "https://rss.rtbf.be/article/rss/rtbfinfo_homepage.xml",
     },
 
     # Ranska, Saksa, Espanja – pyytämäsi
@@ -216,6 +187,21 @@ SOURCES = [
         "name": "Japan Times",
         "lang": "en",
         "url": "https://www.japantimes.co.jp/feed/",
+    },
+        {
+        "name": "The Straits Times World News (SG)",
+        "lang": "en",
+        "url": "https://www.straitstimes.com/news/world/rss.xml",
+    },
+    {
+        "name": "Yonhap News Agency (KR, EN)",
+        "lang": "en",
+        "url": "https://en.yna.co.kr/RSS/news.xml",
+    },
+    {
+        "name": "RNZ World Headlines (NZ)",
+        "lang": "en",
+        "url": "https://www.rnz.co.nz/rss/world",
     },
     # Etelä-Korea, Intia jne. voidaan lisätä myöhemmin
 
