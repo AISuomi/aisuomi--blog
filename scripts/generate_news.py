@@ -92,6 +92,66 @@ SOURCES = [
         "lang": "en",
         "url": "http://feeds.washingtonpost.com/rss/world",
     },
+    SOURCES += [
+    # ------------------------------------------------------------------
+    # Pohjois-Amerikka
+    # ------------------------------------------------------------------
+    {
+        "name": "CBC World News (CA)",
+        "lang": "en",
+        "url": "https://www.cbc.ca/webfeed/rss/rss-world",
+    },
+    {
+        "name": "CBC Top Stories (CA)",
+        "lang": "en",
+        "url": "https://www.cbc.ca/webfeed/rss/rss-topstories",
+    },  # yleisvirta, jossa usein myös ulkomaanjuttuja
+
+    {
+        "name": "ABC News International (US)",
+        "lang": "en",
+        "url": "https://feeds.abcnews.com/abcnews/internationalheadlines",
+    },
+    {
+        "name": "LA Times – World & Nation (US)",
+        "lang": "en",
+        "url": "https://www.latimes.com/world-nation/rss2.0.xml",
+    },
+
+    # ------------------------------------------------------------------
+    # Eurooppa
+    # ------------------------------------------------------------------
+    {
+        "name": "RTÉ News (IE)",
+        "lang": "en",
+        "url": "https://www.rte.ie/feeds/rss/?index=/news/",
+    },
+    {
+        "name": "RTBF Info (BE)",
+        "lang": "fr",
+        "url": "https://rss.rtbf.be/article/rss/rtbfinfo_homepage.xml",
+    },
+
+    # ------------------------------------------------------------------
+    # Aasia / Tyynenmeren alue
+    # ------------------------------------------------------------------
+    {
+        "name": "The Straits Times World News (SG)",
+        "lang": "en",
+        "url": "https://www.straitstimes.com/news/world/rss.xml",
+    },
+    {
+        "name": "Yonhap News Agency (KR, EN)",
+        "lang": "en",
+        "url": "https://en.yna.co.kr/RSS/news.xml",
+    },
+    {
+        "name": "RNZ World Headlines (NZ)",
+        "lang": "en",
+        "url": "https://www.rnz.co.nz/rss/world",
+    },
+]
+
 
     # Pohjoismaat, Eurooppa (kansalliskieliä)
     {
