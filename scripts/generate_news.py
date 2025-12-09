@@ -282,10 +282,10 @@ def collect_news() -> dict:
             print(f"VAROITUS: Lähteen '{src['name']}' haku epäonnistui: {e}")
             continue
 
-        if feed.bozo:
+        if getattr(feed, "bozo", 0):
             print(
                 f"VAROITUS: Lähteen '{src['name']}' syöte voi olla ongelmallinen "
-                f"(bozo={feed.bozo}, exc={feed.bozo_exception})"
+                f"(bozo={feed.bozo}, exc={getattr(feed, 'bozo_exception', None)})"
             )
 
         for entry in feed.entries:
@@ -311,6 +311,8 @@ def collect_news() -> dict:
                 "source": src["name"],
                 "lang": src["lang"],
                 "published": iso_date_from_entry(entry),
+                # Talteen myös hakuteksti (otsikko + summary) luokittelua varten
+                "text": text,
             }
 
             new_items.append(item)
@@ -361,7 +363,13 @@ def build_recent_html(history: dict) -> str:
         source = html.escape(source_raw)
         lang = html.escape(lang_raw)
 
-        text_lower = f"{title_raw} {source_raw}".lower()
+        # Käytä ensisijaisesti talteen otettua tekstikenttää,
+        # mutta toimi myös vanhan datan kanssa.
+        stored_text = item.get("text")
+        if isinstance(stored_text, str) and stored_text:
+            text_lower = stored_text
+        else:
+            text_lower = f"{title_raw} {source_raw}".lower()
 
         has_country = any(kw in text_lower for kw in KEYWORDS_COUNTRY)
         has_local = any(kw in text_lower for kw in KEYWORDS_LOCAL)
@@ -380,7 +388,7 @@ def build_recent_html(history: dict) -> str:
             other_rows.append(line)
 
     if not primary_rows and not other_rows:
-        return '  <li class="muted">Ei Suomiaiheisia uutisia viimeisen 7 päivän ajalta.</li>'
+        return '  <li class="muted">Ei Suomi-aiheisia uutisia viimeisen 7 päivän ajalta.</li>'
 
     rows: list[str] = []
 
@@ -416,6 +424,7 @@ def build_archive_pages_and_index_list(history: dict) -> str:
         page_path = ROOT / page_name
 
         li_rows: list[str] = []
+        # Voisi halutessa sortata myös tässä päivämäärän mukaan
         for it in items:
             title = html.escape(it.get("title", "").strip())
             link = html.escape(it.get("link", "").strip())
@@ -510,7 +519,15 @@ def patch_between_markers(html_text: str, start_marker: str, end_marker: str, ne
 
 
 def update_index_page(history: dict) -> None:
-    html_text = NEWS_INDEX_PAGE.read_text(encoding="utf-8")
+    if not NEWS_INDEX_PAGE.exists():
+        print(f"VAROITUS: Index-sivua ei löytynyt: {NEWS_INDEX_PAGE}")
+        return
+
+    try:
+        html_text = NEWS_INDEX_PAGE.read_text(encoding="utf-8")
+    except Exception as e:
+        print(f"VAROITUS: Index-sivun lukeminen epäonnistui: {e}")
+        return
 
     recent_block = build_recent_html(history)
     archive_block = build_archive_pages_and_index_list(history)
