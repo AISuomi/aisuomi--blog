@@ -40,7 +40,7 @@ jobs:
 
       - name: Update index meta
         run: |
-          python scripts/update_index_meta.py
+          python update_index_meta.py
 
       - name: Generate sitemap
         run: |
