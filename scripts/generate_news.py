@@ -2,6 +2,8 @@ from pathlib import Path
 from datetime import datetime, timedelta
 import json
 import html
+from urllib.request import urlopen
+from urllib.error import URLError, HTTPError
 
 import feedparser  # asennettu workflowissa
 
@@ -13,14 +15,18 @@ DATA_DIR.mkdir(exist_ok=True)
 NEWS_HISTORY_PATH = DATA_DIR / "news_history.json"
 NEWS_INDEX_PAGE = ROOT / "uutisiasuomesta.html"
 
+# Kuinka kauan maksimissaan odotetaan yksittäistä RSS-lähdettä (sekunteina)
+REQUEST_TIMEOUT = 8
+
+# Kuinka monta uusinta uutista per feed käydään läpi.
+# Jos haluat käsitellä kaikki, voit käyttää esim. None ja poistaa viipaleen.
+MAX_ENTRIES_PER_FEED = 100
+
 # ---------------------------------------------------------------------------
 # Lähdelista: ulkomaiset uutismediat, jotka voivat mainita Suomen
-# (voit lisätä tänne myöhemmin uusia helposti)
 # ---------------------------------------------------------------------------
 
 SOURCES = [
-    # Yle poistettu – idea on seurata, mitä MUU maailma Suomesta kirjoittaa
-
     # Kansainväliset isot englanninkieliset
     {
         "name": "Reuters World News",
@@ -92,7 +98,7 @@ SOURCES = [
         "lang": "en",
         "url": "http://feeds.washingtonpost.com/rss/world",
     },
-        {
+    {
         "name": "CBC World News (CA)",
         "lang": "en",
         "url": "https://www.cbc.ca/webfeed/rss/rss-world",
@@ -101,8 +107,7 @@ SOURCES = [
         "name": "CBC Top Stories (CA)",
         "lang": "en",
         "url": "https://www.cbc.ca/webfeed/rss/rss-topstories",
-    },  # yleisvirta, jossa usein myös ulkomaanjuttuja
-
+    },
     {
         "name": "ABC News International (US)",
         "lang": "en",
@@ -146,7 +151,7 @@ SOURCES = [
         "url": "https://rss.rtbf.be/article/rss/rtbfinfo_homepage.xml",
     },
 
-    # Ranska, Saksa, Espanja – pyytämäsi
+    # Ranska, Saksa, Espanja
     {
         "name": "Le Monde (FR)",
         "lang": "fr",
@@ -175,7 +180,7 @@ SOURCES = [
         "url": "https://www.publico.pt/rss/mundo",
     },
 
-    # Kanada, Australia
+    # Australia
     {
         "name": "ABC Australia World",
         "lang": "en",
@@ -188,7 +193,7 @@ SOURCES = [
         "lang": "en",
         "url": "https://www.japantimes.co.jp/feed/",
     },
-        {
+    {
         "name": "The Straits Times World News (SG)",
         "lang": "en",
         "url": "https://www.straitstimes.com/news/world/rss.xml",
@@ -203,16 +208,15 @@ SOURCES = [
         "lang": "en",
         "url": "https://www.rnz.co.nz/rss/world",
     },
-    # Etelä-Korea, Intia jne. voidaan lisätä myöhemmin
 
-    # Kiinan suunnalta neutraalein: Hongkongin SCMP
+    # Hongkong / Kiina-suunnan englanninkielinen
     {
         "name": "South China Morning Post (HK, EN)",
         "lang": "en",
         "url": "https://www.scmp.com/rss/91/feed",
     },
 
-    # Lähi-itä & Afrikka
+    # Lähi-itä & LatAm
     {
         "name": "Al Jazeera – All News",
         "lang": "en",
@@ -226,10 +230,9 @@ SOURCES = [
 ]
 
 # ---------------------------------------------------------------------------
-# Hakusanat: mikä tulkitaan Suomi-aiheiseksi?
+# Hakusanat
 # ---------------------------------------------------------------------------
 
-# Maatason sanat: “Suomi” eri kielillä
 KEYWORDS_COUNTRY = [
     "finland",
     "finnish",
@@ -243,7 +246,6 @@ KEYWORDS_COUNTRY = [
     "芬兰",        # kiina
 ]
 
-# Paikalliset / alueelliset sanat
 KEYWORDS_LOCAL = [
     "kurejoki",
     "alajärvi",
@@ -252,7 +254,7 @@ KEYWORDS_LOCAL = [
     "lappi",
     "lapland",
     "saame",
-    "helsinki",  # usein merkki Suomesta, vaikka sana “Finland” ei olisi mukana
+    "helsinki",
 ]
 
 ALL_KEYWORDS = KEYWORDS_COUNTRY + KEYWORDS_LOCAL
@@ -271,10 +273,8 @@ def load_history() -> dict:
         with NEWS_HISTORY_PATH.open("r", encoding="utf-8") as f:
             data = json.load(f)
     except Exception:
-        # Jos tiedosto on rikki → aloita puhtaalta pöydältä
         return {"items": []}
 
-    # Vanha formaatti: lista → kääri dictin sisään
     if isinstance(data, list):
         return {"items": data}
 
@@ -293,7 +293,7 @@ def save_history(history: dict) -> None:
 
 
 def iso_date_from_entry(entry) -> str:
-    """Palauta YYYY-MM-DD, käytetään published/updated -ajasta tai tämän päivän päivää."""
+    """Palauta YYYY-MM-DD published/updated -ajasta tai tämän päivän päivää."""
     for attr in ("published_parsed", "updated_parsed"):
         t = getattr(entry, attr, None)
         if t:
@@ -305,7 +305,7 @@ def iso_date_from_entry(entry) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Uutisten keruu
+# Uutisten keruu (timeout + max entries)
 # ---------------------------------------------------------------------------
 
 def collect_news() -> dict:
@@ -323,7 +323,13 @@ def collect_news() -> dict:
         print(f"Haetaan uutisia lähteestä: {src['name']} ({src['url']})")
 
         try:
-            feed = feedparser.parse(src["url"])
+            # Ajallinen turvaraja yhdelle lähteelle
+            with urlopen(src["url"], timeout=REQUEST_TIMEOUT) as resp:
+                data = resp.read()
+            feed = feedparser.parse(data)
+        except (URLError, HTTPError, TimeoutError) as e:
+            print(f"VAROITUS: Lähteen '{src['name']}' haku epäonnistui (verkko/timeout): {e}")
+            continue
         except Exception as e:
             print(f"VAROITUS: Lähteen '{src['name']}' haku epäonnistui: {e}")
             continue
@@ -334,7 +340,11 @@ def collect_news() -> dict:
                 f"(bozo={feed.bozo}, exc={getattr(feed, 'bozo_exception', None)})"
             )
 
-        for entry in feed.entries:
+        entries = feed.entries
+        if MAX_ENTRIES_PER_FEED is not None:
+            entries = entries[:MAX_ENTRIES_PER_FEED]
+
+        for entry in entries:
             title = getattr(entry, "title", "").strip()
             link = getattr(entry, "link", "").strip()
             summary = getattr(entry, "summary", "")
@@ -344,7 +354,6 @@ def collect_news() -> dict:
 
             text = f"{title} {summary}".lower()
 
-            # Poimi vain jutut joissa esiintyy jokin ALL_KEYWORDS -listasta
             if not any(kw in text for kw in ALL_KEYWORDS):
                 continue
 
@@ -357,7 +366,6 @@ def collect_news() -> dict:
                 "source": src["name"],
                 "lang": src["lang"],
                 "published": iso_date_from_entry(entry),
-                # Talteen myös hakuteksti (otsikko + summary) luokittelua varten
                 "text": text,
             }
 
@@ -367,7 +375,6 @@ def collect_news() -> dict:
     if new_items:
         history["items"].extend(new_items)
         history["items"].sort(key=lambda x: x.get("published", ""), reverse=True)
-        # pidetään historia maltillisena
         history["items"] = history["items"][:2000]
 
     return history
@@ -378,17 +385,10 @@ def collect_news() -> dict:
 # ---------------------------------------------------------------------------
 
 def build_recent_html(history: dict) -> str:
-    """Uusimmat 7 päivän uutiset <li>-elementteinä.
-
-    Jaetaan kahteen ryhmään:
-    - 'keskeiset' = otsikko/summary sisältää jonkin KEYWORDS_COUNTRY-sanan
-    - 'muut' = sisältää vain paikallisia sanoja (KEYWORDS_LOCAL),
-      mutta ei KEYWORDS_COUNTRY-sanoja.
-    """
     cutoff = datetime.utcnow().date() - timedelta(days=7)
 
-    primary_rows: list[str] = []   # keskeiset Suomi-maininnat
-    other_rows: list[str] = []     # muut paikalliset/alueelliset maininnat
+    primary_rows: list[str] = []
+    other_rows: list[str] = []
 
     for item in history["items"]:
         try:
@@ -409,8 +409,6 @@ def build_recent_html(history: dict) -> str:
         source = html.escape(source_raw)
         lang = html.escape(lang_raw)
 
-        # Käytä ensisijaisesti talteen otettua tekstikenttää,
-        # mutta toimi myös vanhan datan kanssa.
         stored_text = item.get("text")
         if isinstance(stored_text, str) and stored_text:
             text_lower = stored_text
@@ -430,7 +428,6 @@ def build_recent_html(history: dict) -> str:
         elif has_local:
             other_rows.append(line)
         else:
-            # varalta, jos ALL_KEYWORDS-match tuli vain summaryssa
             other_rows.append(line)
 
     if not primary_rows and not other_rows:
@@ -453,8 +450,6 @@ def build_recent_html(history: dict) -> str:
 
 
 def build_archive_pages_and_index_list(history: dict) -> str:
-    """Luo uutisiasuomesta-YYYY.html -sivut ja palauttaa index-sivun arkistolistan."""
-
     by_year: dict[str, list[dict]] = {}
     for item in history["items"]:
         published = item.get("published", "")
@@ -470,7 +465,6 @@ def build_archive_pages_and_index_list(history: dict) -> str:
         page_path = ROOT / page_name
 
         li_rows: list[str] = []
-        # Voisi halutessa sortata myös tässä päivämäärän mukaan
         for it in items:
             title = html.escape(it.get("title", "").strip())
             link = html.escape(it.get("link", "").strip())
@@ -555,7 +549,6 @@ def build_archive_pages_and_index_list(history: dict) -> str:
 
 
 def patch_between_markers(html_text: str, start_marker: str, end_marker: str, new_block: str) -> str:
-    """Korvaa kahden kommenttimerkin välin."""
     start = html_text.find(start_marker)
     end = html_text.find(end_marker)
     if start == -1 or end == -1 or end < start:
