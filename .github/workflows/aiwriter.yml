@@ -38,6 +38,10 @@ jobs:
         run: |
           python scripts/generate_news.py
 
+      - name: Update index meta
+        run: |
+          python scripts/update_index_meta.py
+
       - name: Generate sitemap
         run: |
           python update_sitemap.py
