@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write   # sallii git pushin
+    timeout-minutes: 20 # estää juuttumisen, ei hidasta
 
     steps:
       - name: Checkout
@@ -20,6 +21,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"   # nopeuttaa pip-asennuksia
 
       - name: Install dependencies
         run: |
@@ -28,13 +30,17 @@ jobs:
 
       - name: Generate posts
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY_SECRET }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python scripts/generate_post.py
 
       - name: Generate news page
         run: |
           python scripts/generate_news.py
+
+      - name: Generate sitemap
+        run: |
+          python update_sitemap.py
 
       - name: Post to Facebook (optional)
         env:
