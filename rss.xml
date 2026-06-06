@@ -5,7 +5,19 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Fri, 05 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Ruoan hinnan nousu Suomessa – arjen talouden haasteet ja sopeutumiskeinot</title>
+      <link>https://aisuomi.blog/posts/talous/2026-06-06-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-06-06-talous.html</guid>
+      <pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Julkiset palvelut Suomessa – arjen perusta ja sen haasteet</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-06-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-06-yhteiskunta.html</guid>
+      <pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Pienten yritysten kustannuspaineet Suomessa – arjen haasteet ja sopeutumisen mahdollisuudet</title>
       <link>https://aisuomi.blog/posts/talous/2026-06-05-talous.html</link>
@@ -293,18 +305,6 @@
       <link>https://aisuomi.blog/posts/yhteiskunta/2026-03-24-yhteiskunta.html</link>
       <guid>https://aisuomi.blog/posts/yhteiskunta/2026-03-24-yhteiskunta.html</guid>
       <pubDate>Tue, 24 Mar 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Hiljaisuuden tanssi</title>
-      <link>https://aisuomi.blog/posts/teema/2026-03-19-teema.html</link>
-      <guid>https://aisuomi.blog/posts/teema/2026-03-19-teema.html</guid>
-      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Digitalisaatio ja sen vaikutukset suomalaiseen arkitalouteen</title>
-      <link>https://aisuomi.blog/posts/talous/2026-03-17-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-03-17-talous.html</guid>
-      <pubDate>Tue, 17 Mar 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
