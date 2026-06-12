@@ -5,7 +5,19 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Thu, 11 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 12 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Maaseudun ja kaupunkien taloudellinen ero Suomessa – arjen näkökulma</title>
+      <link>https://aisuomi.blog/posts/talous/2026-06-12-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-06-12-talous.html</guid>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisten arjen joustavuus työelämän muutoksissa</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-12-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-12-yhteiskunta.html</guid>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Ruokakustannusten nousu Suomessa – arjen vaikutukset ja sopeutumiskeinot</title>
       <link>https://aisuomi.blog/posts/talous/2026-06-11-talous.html</link>
@@ -292,18 +304,6 @@
       <title>Tulevaisuuden talous: digitaaliset valuutat ja niiden vaikutus arkeen</title>
       <link>https://aisuomi.blog/posts/talous/2026-04-14-talous.html</link>
       <guid>https://aisuomi.blog/posts/talous/2026-04-14-talous.html</guid>
-      <pubDate>Tue, 14 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Ruoan ja muistojen välinen yhteys – Maku, joka vie menneisyyteen</title>
-      <link>https://aisuomi.blog/posts/ruoka/2026-04-14-ruoka.html</link>
-      <guid>https://aisuomi.blog/posts/ruoka/2026-04-14-ruoka.html</guid>
-      <pubDate>Tue, 14 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomen sosiaaliturvan muutokset ja niiden vaikutus arkeen</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-04-14-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-04-14-yhteiskunta.html</guid>
       <pubDate>Tue, 14 Apr 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
