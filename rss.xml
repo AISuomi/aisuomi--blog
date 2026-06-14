@@ -5,7 +5,19 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Sat, 13 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Asumisen kustannukset Suomessa – mitä arjen taloudessa tapahtuu?</title>
+      <link>https://aisuomi.blog/posts/talous/2026-06-14-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-06-14-talous.html</guid>
+      <pubDate>Sun, 14 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Liikenteen ruuhkautuminen kaupunkien arjessa – mitä se tarkoittaa suomalaisille?</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-14-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-14-yhteiskunta.html</guid>
+      <pubDate>Sun, 14 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Korkojen nousu ja sen vaikutukset suomalaisiin kotitalouksiin</title>
       <link>https://aisuomi.blog/posts/talous/2026-06-13-talous.html</link>
@@ -292,18 +304,6 @@
       <title>Digitalisaation vaikutus suomalaiseen arkitalouteen</title>
       <link>https://aisuomi.blog/posts/talous/2026-04-21-talous.html</link>
       <guid>https://aisuomi.blog/posts/talous/2026-04-21-talous.html</guid>
-      <pubDate>Tue, 21 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Kesän maku: Kotimaisen mansikan tarina ja käyttö arjessa</title>
-      <link>https://aisuomi.blog/posts/ruoka/2026-04-21-ruoka.html</link>
-      <guid>https://aisuomi.blog/posts/ruoka/2026-04-21-ruoka.html</guid>
-      <pubDate>Tue, 21 Apr 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Digitalisaation vaikutus suomalaisen arjen palveluihin</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-04-21-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-04-21-yhteiskunta.html</guid>
       <pubDate>Tue, 21 Apr 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
