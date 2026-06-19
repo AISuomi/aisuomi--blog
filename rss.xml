@@ -5,7 +5,19 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Thu, 18 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Työn tekemisen kannattavuus Suomessa – arjen talouden näkökulma</title>
+      <link>https://aisuomi.blog/posts/talous/2026-06-19-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-06-19-talous.html</guid>
+      <pubDate>Fri, 19 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisten arjen turvallisuuden tunne – mistä se muodostuu ja miksi se muuttuu?</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-19-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-19-yhteiskunta.html</guid>
+      <pubDate>Fri, 19 Jun 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Yrittäjän arjen kustannuspaineet Suomessa – mistä ne johtuvat ja miten niihin voi varautua?</title>
       <link>https://aisuomi.blog/posts/talous/2026-06-18-talous.html</link>
@@ -292,18 +304,6 @@
       <title>Tulevaisuuden työ ja talous: miten automaatio muokkaa arkeamme?</title>
       <link>https://aisuomi.blog/posts/talous/2026-05-12-talous.html</link>
       <guid>https://aisuomi.blog/posts/talous/2026-05-12-talous.html</guid>
-      <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Kesän makuja lautasella – suomalainen mustikka herkkuna</title>
-      <link>https://aisuomi.blog/posts/ruoka/2026-05-12-ruoka.html</link>
-      <guid>https://aisuomi.blog/posts/ruoka/2026-05-12-ruoka.html</guid>
-      <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Julkisen liikenteen haasteet ja mahdollisuudet Suomessa</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-05-12-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-05-12-yhteiskunta.html</guid>
       <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
