@@ -5,7 +5,25 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Mon, 06 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 07 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Työmatkakulujen korvausten rajaus – vaikutukset suomalaisiin kotitalouksiin</title>
+      <link>https://aisuomi.blog/posts/talous/2026-07-07-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-07-07-talous.html</guid>
+      <pubDate>Tue, 07 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Ruoan hinnan vaikutus suomalaisiin arjen valintoihin</title>
+      <link>https://aisuomi.blog/posts/ruoka/2026-07-07-ruoka.html</link>
+      <guid>https://aisuomi.blog/posts/ruoka/2026-07-07-ruoka.html</guid>
+      <pubDate>Tue, 07 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisen ikääntymisen arki: konkreettiset haasteet ja ratkaisut</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-07-07-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-07-07-yhteiskunta.html</guid>
+      <pubDate>Tue, 07 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Ruoan hinnan nousu Suomessa – arjen talouden konkreettiset vaikutukset</title>
       <link>https://aisuomi.blog/posts/talous/2026-07-06-talous.html</link>
@@ -287,24 +305,6 @@
       <link>https://aisuomi.blog/posts/ruoka/2026-06-16-ruoka.html</link>
       <guid>https://aisuomi.blog/posts/ruoka/2026-06-16-ruoka.html</guid>
       <pubDate>Tue, 16 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Maaseudun palveluiden haasteet suomalaisen arjessa</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-16-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-16-yhteiskunta.html</guid>
-      <pubDate>Tue, 16 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Korkojen nousun vaikutukset suomalaisiin kotitalouksiin</title>
-      <link>https://aisuomi.blog/posts/talous/2026-06-15-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-06-15-talous.html</guid>
-      <pubDate>Mon, 15 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomalaisen koulutuksen arki: haasteet ja mahdollisuudet tavallisen perheen näkökulmasta</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-15-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-15-yhteiskunta.html</guid>
-      <pubDate>Mon, 15 Jun 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
