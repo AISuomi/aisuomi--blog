@@ -5,7 +5,25 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Wed, 08 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Verotuksen vaikutus suomalaisten arjen talouteen: konkreettinen näkökulma</title>
+      <link>https://aisuomi.blog/posts/talous/2026-07-09-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-07-09-talous.html</guid>
+      <pubDate>Thu, 09 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisten arjen turvallisuuden tunne: mistä se muodostuu ja miksi se muuttuu?</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-07-09-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-07-09-yhteiskunta.html</guid>
+      <pubDate>Thu, 09 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisen arjen digiloikka: Mobiilipankkien rooli talouden hallinnassa</title>
+      <link>https://aisuomi.blog/posts/teema/2026-07-09-teema.html</link>
+      <guid>https://aisuomi.blog/posts/teema/2026-07-09-teema.html</guid>
+      <pubDate>Thu, 09 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Energiakustannusten nousu ja sen vaikutukset suomalaisiin kotitalouksiin</title>
       <link>https://aisuomi.blog/posts/talous/2026-07-08-talous.html</link>
@@ -287,24 +305,6 @@
       <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-18-yhteiskunta.html</link>
       <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-18-yhteiskunta.html</guid>
       <pubDate>Thu, 18 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Etätyön vaikutus suomalaisen perheen arkeen ja ajankäyttöön</title>
-      <link>https://aisuomi.blog/posts/teema/2026-06-18-teema.html</link>
-      <guid>https://aisuomi.blog/posts/teema/2026-06-18-teema.html</guid>
-      <pubDate>Thu, 18 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Energiakustannusten nousu ja sen vaikutukset suomalaisiin kotitalouksiin</title>
-      <link>https://aisuomi.blog/posts/talous/2026-06-17-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-06-17-talous.html</guid>
-      <pubDate>Wed, 17 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Kaupunkien kasvu Suomessa – mitä se tarkoittaa tavallisen ihmisen arjessa?</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-17-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-17-yhteiskunta.html</guid>
-      <pubDate>Wed, 17 Jun 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
