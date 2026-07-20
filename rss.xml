@@ -5,7 +5,19 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Sun, 19 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 20 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Ruokakustannusten nousu ja sen vaikutukset suomalaisten arkeen</title>
+      <link>https://aisuomi.blog/posts/talous/2026-07-20-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-07-20-talous.html</guid>
+      <pubDate>Mon, 20 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisen asumisen arjen haasteet: kustannukset, saatavuus ja muutokset</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-07-20-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-07-20-yhteiskunta.html</guid>
+      <pubDate>Mon, 20 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Korkojen nousun vaikutukset suomalaisiin kotitalouksiin</title>
       <link>https://aisuomi.blog/posts/talous/2026-07-19-talous.html</link>
@@ -293,18 +305,6 @@
       <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-29-yhteiskunta.html</link>
       <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-29-yhteiskunta.html</guid>
       <pubDate>Mon, 29 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Työmatkakulujen verovähennysoikeuden rajaus ja sen vaikutukset suomalaisiin kotitalouksiin</title>
-      <link>https://aisuomi.blog/posts/talous/2026-06-28-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-06-28-talous.html</guid>
-      <pubDate>Sun, 28 Jun 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomalaisen koulutuksen arki: miten oppilaiden hyvinvointi näkyy päivittäisessä koulutyössä</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-06-28-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-06-28-yhteiskunta.html</guid>
-      <pubDate>Sun, 28 Jun 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
