@@ -5,7 +5,25 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Wed, 22 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 23 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Työn verovähennykset Suomessa – konkreettinen vaikutus arjen talouteen</title>
+      <link>https://aisuomi.blog/posts/talous/2026-07-23-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-07-23-talous.html</guid>
+      <pubDate>Thu, 23 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisten turvallisuuden tunne arjessa: mistä se muodostuu ja miksi se muuttuu?</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-07-23-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-07-23-yhteiskunta.html</guid>
+      <pubDate>Thu, 23 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Paikallisen lähiruoan saatavuus ja sen vaikutus suomalaiseen arkeen</title>
+      <link>https://aisuomi.blog/posts/teema/2026-07-23-teema.html</link>
+      <guid>https://aisuomi.blog/posts/teema/2026-07-23-teema.html</guid>
+      <pubDate>Thu, 23 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Väestön ikääntymisen vaikutukset suomalaisen arjen talouteen</title>
       <link>https://aisuomi.blog/posts/talous/2026-07-22-talous.html</link>
@@ -287,24 +305,6 @@
       <link>https://aisuomi.blog/posts/yhteiskunta/2026-07-02-yhteiskunta.html</link>
       <guid>https://aisuomi.blog/posts/yhteiskunta/2026-07-02-yhteiskunta.html</guid>
       <pubDate>Thu, 02 Jul 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomalaisten arjen kiertotalous: miten tavaroiden lainaaminen muuttaa kulutustottumuksia</title>
-      <link>https://aisuomi.blog/posts/teema/2026-07-02-teema.html</link>
-      <guid>https://aisuomi.blog/posts/teema/2026-07-02-teema.html</guid>
-      <pubDate>Thu, 02 Jul 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Työn tekemisen kannattavuus Suomessa – arjen talouden näkökulma</title>
-      <link>https://aisuomi.blog/posts/talous/2026-07-01-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-07-01-talous.html</guid>
-      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomalaisen byrokratian sujuvuus arjessa: miksi se vaikuttaa jokapäiväiseen elämään</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-07-01-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-07-01-yhteiskunta.html</guid>
-      <pubDate>Wed, 01 Jul 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
