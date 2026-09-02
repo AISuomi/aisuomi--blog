@@ -5,7 +5,19 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Tue, 01 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 02 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Energiakustannusten nousu suomalaisessa arjessa: konkreettiset vaikutukset ja arjen haasteet</title>
+      <link>https://aisuomi.blog/posts/talous/2026-09-02-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-09-02-talous.html</guid>
+      <pubDate>Wed, 02 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisten julkisten palveluiden saavutettavuus tavallisen ihmisen arjessa</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-09-02-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-09-02-yhteiskunta.html</guid>
+      <pubDate>Wed, 02 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Suomalaisten pienyritysten kustannuspaineet arjessa</title>
       <link>https://aisuomi.blog/posts/talous/2026-09-01-talous.html</link>
@@ -293,18 +305,6 @@
       <link>https://aisuomi.blog/posts/yhteiskunta/2026-08-12-yhteiskunta.html</link>
       <guid>https://aisuomi.blog/posts/yhteiskunta/2026-08-12-yhteiskunta.html</guid>
       <pubDate>Wed, 12 Aug 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Korkojen nousun vaikutus suomalaisen perheen lainanhoitoon</title>
-      <link>https://aisuomi.blog/posts/talous/2026-08-11-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-08-11-talous.html</guid>
-      <pubDate>Tue, 11 Aug 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Hävikin vähentäminen suomalaisessa arjessa: käytännön ratkaisuja ja vaikutuksia</title>
-      <link>https://aisuomi.blog/posts/ruoka/2026-08-11-ruoka.html</link>
-      <guid>https://aisuomi.blog/posts/ruoka/2026-08-11-ruoka.html</guid>
-      <pubDate>Tue, 11 Aug 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
