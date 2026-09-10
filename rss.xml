@@ -5,7 +5,25 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Wed, 09 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 10 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Suomalaisten kotitalouksien verotus arjen näkökulmasta</title>
+      <link>https://aisuomi.blog/posts/talous/2026-09-10-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-09-10-talous.html</guid>
+      <pubDate>Thu, 10 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisen työelämän muutos ja sen vaikutukset tavallisen työntekijän arjessa</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-09-10-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-09-10-yhteiskunta.html</guid>
+      <pubDate>Thu, 10 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Älykkäät jäteastiat suomalaisessa arjessa: miten teknologia muuttaa jätteiden lajittelua</title>
+      <link>https://aisuomi.blog/posts/teema/2026-09-10-teema.html</link>
+      <guid>https://aisuomi.blog/posts/teema/2026-09-10-teema.html</guid>
+      <pubDate>Thu, 10 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Työntekijöiden osaamisen kehittäminen suomalaisissa pk-yrityksissä – arjen talousnäkökulma</title>
       <link>https://aisuomi.blog/posts/talous/2026-09-09-talous.html</link>
@@ -287,24 +305,6 @@
       <link>https://aisuomi.blog/posts/yhteiskunta/2026-08-20-yhteiskunta.html</link>
       <guid>https://aisuomi.blog/posts/yhteiskunta/2026-08-20-yhteiskunta.html</guid>
       <pubDate>Thu, 20 Aug 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Älykkäät jäteastiat ja niiden vaikutus suomalaisen arjen jätehuoltoon</title>
-      <link>https://aisuomi.blog/posts/teema/2026-08-20-teema.html</link>
-      <guid>https://aisuomi.blog/posts/teema/2026-08-20-teema.html</guid>
-      <pubDate>Thu, 20 Aug 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Verotuksen vaikutus suomalaisen arjen talouteen: konkreettinen näkökulma</title>
-      <link>https://aisuomi.blog/posts/talous/2026-08-19-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-08-19-talous.html</guid>
-      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomalaisten turvallisuuden tunne arjessa: konkreettiset haasteet ja muutokset</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-08-19-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-08-19-yhteiskunta.html</guid>
-      <pubDate>Wed, 19 Aug 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
