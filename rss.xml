@@ -5,7 +5,19 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Sun, 13 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 14 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Energiakustannusten nousu suomalaisissa kotitalouksissa: arjen vaikutukset ja käytännön haasteet</title>
+      <link>https://aisuomi.blog/posts/talous/2026-09-14-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-09-14-talous.html</guid>
+      <pubDate>Mon, 14 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisen liikenteen arki: joukkoliikenteen saavutettavuus kaupungeissa ja taajamissa</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-09-14-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-09-14-yhteiskunta.html</guid>
+      <pubDate>Mon, 14 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Yrittäjän arjen kustannuspaineet Suomessa: konkreettinen tilannekuva</title>
       <link>https://aisuomi.blog/posts/talous/2026-09-13-talous.html</link>
@@ -293,18 +305,6 @@
       <link>https://aisuomi.blog/posts/yhteiskunta/2026-08-24-yhteiskunta.html</link>
       <guid>https://aisuomi.blog/posts/yhteiskunta/2026-08-24-yhteiskunta.html</guid>
       <pubDate>Mon, 24 Aug 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Korkojen nousun vaikutukset suomalaisen kotitalouden lainanhoitoon</title>
-      <link>https://aisuomi.blog/posts/talous/2026-08-23-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-08-23-talous.html</guid>
-      <pubDate>Sun, 23 Aug 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomalaisen työelämän muutos: etätyön arki ja sen vaikutukset</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-08-23-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-08-23-yhteiskunta.html</guid>
-      <pubDate>Sun, 23 Aug 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
