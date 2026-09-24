@@ -5,7 +5,25 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Wed, 23 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 24 Sep 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Verotuksen vaikutus suomalaisen arjen talouteen</title>
+      <link>https://aisuomi.blog/posts/talous/2026-09-24-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-09-24-talous.html</guid>
+      <pubDate>Thu, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisten maaseudun palveluiden saavutettavuus ja arjen haasteet</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-09-24-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-09-24-yhteiskunta.html</guid>
+      <pubDate>Thu, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Etätyön vaikutukset suomalaisen arjen liikkumiseen ja liikkumistarpeisiin</title>
+      <link>https://aisuomi.blog/posts/teema/2026-09-24-teema.html</link>
+      <guid>https://aisuomi.blog/posts/teema/2026-09-24-teema.html</guid>
+      <pubDate>Thu, 24 Sep 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Väestön ikääntymisen vaikutukset Suomen työmarkkinoihin</title>
       <link>https://aisuomi.blog/posts/talous/2026-09-23-talous.html</link>
@@ -287,24 +305,6 @@
       <link>https://aisuomi.blog/posts/yhteiskunta/2026-09-03-yhteiskunta.html</link>
       <guid>https://aisuomi.blog/posts/yhteiskunta/2026-09-03-yhteiskunta.html</guid>
       <pubDate>Thu, 03 Sep 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Paikallisbussien aikataulumuutokset ja niiden vaikutukset suomalaisen arjen liikkumiseen</title>
-      <link>https://aisuomi.blog/posts/teema/2026-09-03-teema.html</link>
-      <guid>https://aisuomi.blog/posts/teema/2026-09-03-teema.html</guid>
-      <pubDate>Thu, 03 Sep 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Energiakustannusten nousu suomalaisessa arjessa: konkreettiset vaikutukset ja arjen haasteet</title>
-      <link>https://aisuomi.blog/posts/talous/2026-09-02-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-09-02-talous.html</guid>
-      <pubDate>Wed, 02 Sep 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomalaisten julkisten palveluiden saavutettavuus tavallisen ihmisen arjessa</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-09-02-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-09-02-yhteiskunta.html</guid>
-      <pubDate>Wed, 02 Sep 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
