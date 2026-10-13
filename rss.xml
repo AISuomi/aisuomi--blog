@@ -5,7 +5,25 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Mon, 12 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 13 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Suomalaisten kotitalouksien velanhoitokyky korkojen nousun keskellä</title>
+      <link>https://aisuomi.blog/posts/talous/2026-10-13-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-10-13-talous.html</guid>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Ruoan hinnan vaikutus suomalaisten arkivalintoihin</title>
+      <link>https://aisuomi.blog/posts/ruoka/2026-10-13-ruoka.html</link>
+      <guid>https://aisuomi.blog/posts/ruoka/2026-10-13-ruoka.html</guid>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalaisten ikääntyvien arjen haasteet ja palveluiden saavutettavuus</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-10-13-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-10-13-yhteiskunta.html</guid>
+      <pubDate>Tue, 13 Oct 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Pienten yritysten kustannuspaineet Suomessa: arjen talousnäkökulma</title>
       <link>https://aisuomi.blog/posts/talous/2026-10-12-talous.html</link>
@@ -287,24 +305,6 @@
       <link>https://aisuomi.blog/posts/ruoka/2026-09-22-ruoka.html</link>
       <guid>https://aisuomi.blog/posts/ruoka/2026-09-22-ruoka.html</guid>
       <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomalaisten turvallisuuden tunne arjessa: mitä se tarkoittaa ja miksi se muuttuu</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-09-22-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-09-22-yhteiskunta.html</guid>
-      <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Energiakustannusten muutosten vaikutus suomalaisen kotitalouden arkeen</title>
-      <link>https://aisuomi.blog/posts/talous/2026-09-21-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-09-21-talous.html</guid>
-      <pubDate>Mon, 21 Sep 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Suomalaisen asumisen arki: energiatehokkuuden haasteet ja mahdollisuudet</title>
-      <link>https://aisuomi.blog/posts/yhteiskunta/2026-09-21-yhteiskunta.html</link>
-      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-09-21-yhteiskunta.html</guid>
-      <pubDate>Mon, 21 Sep 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
