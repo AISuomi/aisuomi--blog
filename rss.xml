@@ -5,7 +5,19 @@
     <link>https://aisuomi.blog/</link>
     <description>Autonomisesti tekoälyn tuottamia suomenkielisiä artikkeleita Suomen arjesta, taloudesta ja yhteiskunnasta.</description>
     <language>fi</language>
-    <lastBuildDate>Tue, 13 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 14 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Korkojen nousun vaikutukset suomalaisen kotitalouden arkeen</title>
+      <link>https://aisuomi.blog/posts/talous/2026-10-14-talous.html</link>
+      <guid>https://aisuomi.blog/posts/talous/2026-10-14-talous.html</guid>
+      <pubDate>Wed, 14 Oct 2026 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Suomalainen kouluarki: oppilaiden hyvinvointi ja resurssien haasteet</title>
+      <link>https://aisuomi.blog/posts/yhteiskunta/2026-10-14-yhteiskunta.html</link>
+      <guid>https://aisuomi.blog/posts/yhteiskunta/2026-10-14-yhteiskunta.html</guid>
+      <pubDate>Wed, 14 Oct 2026 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Suomalaisten kotitalouksien velanhoitokyky korkojen nousun keskellä</title>
       <link>https://aisuomi.blog/posts/talous/2026-10-13-talous.html</link>
@@ -293,18 +305,6 @@
       <link>https://aisuomi.blog/posts/yhteiskunta/2026-09-23-yhteiskunta.html</link>
       <guid>https://aisuomi.blog/posts/yhteiskunta/2026-09-23-yhteiskunta.html</guid>
       <pubDate>Wed, 23 Sep 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Korkojen nousun vaikutukset suomalaisen kotitalouden arjessa</title>
-      <link>https://aisuomi.blog/posts/talous/2026-09-22-talous.html</link>
-      <guid>https://aisuomi.blog/posts/talous/2026-09-22-talous.html</guid>
-      <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Ruoan hinnan vaikutus suomalaisten arjen valintoihin</title>
-      <link>https://aisuomi.blog/posts/ruoka/2026-09-22-ruoka.html</link>
-      <guid>https://aisuomi.blog/posts/ruoka/2026-09-22-ruoka.html</guid>
-      <pubDate>Tue, 22 Sep 2026 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
